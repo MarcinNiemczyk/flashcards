@@ -3,4 +3,4 @@ from django.shortcuts import render
 
 
 def index(request):
-    return HttpResponse('')
+    return render(request, 'flashcards/index.html')
