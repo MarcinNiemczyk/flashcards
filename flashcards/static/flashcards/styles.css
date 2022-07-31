@@ -1,5 +1,5 @@
 body {
-    background: aliceblue;
+    background: #F8FCFF;
 }
 
 .navbar {
@@ -9,4 +9,12 @@ body {
 .nav-avatar {
     height: 32px;
     width: 32px;
+}
+
+.content-section {
+    background-color: white;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    padding: 25px;
 }

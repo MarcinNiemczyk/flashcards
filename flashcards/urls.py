@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index')
+    path('', views.collections, name='collections')
 ]
 
 # Serving files uploaded by a user during development

@@ -1,0 +1,21 @@
+{% extends 'flashcards/base.html' %} 
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section col-md-6 align-self-center">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create an account</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group mt-4 mb-4">
+                <button class="btn btn-outline-primary" type="submit">Sign Up</button>
+            </div>
+        </form>
+        <div class="border-top pt-2">
+            <small class="text-muted">
+                Already have an account? <a class="ml-2" href="#">Sign In</a>
+            </small>
+        </div>
+    </div>
+{% endblock %}
