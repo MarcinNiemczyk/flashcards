@@ -15,6 +15,58 @@ body {
     background-color: white;
     border-radius: 3px;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
-    padding: 25px;
+    margin-bottom: 40px;
+    padding: 15px;
+}
+
+.add-collection {
+    height: 50px;
+    width: 100%;
+}
+
+.add-collection a {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 50px;
+    color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    font-size: 26px;
+    height: 100%;
+    justify-content: center;
+    text-decoration: none;
+    width: 100%;
+}
+
+.add-collection a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.collection-empty {
+    align-items: center;
+    color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    height: 200px;
+    justify-content: center;
+    width: 100%;
+}
+
+.section-delete {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.section-delete:hover {
+    cursor: pointer;
+    color: rgb(150, 0, 0);
+}
+
+.add-flashcard {
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 32px;
+}
+
+.add-flashcard:hover {
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
 }

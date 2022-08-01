@@ -1,0 +1,67 @@
+{% extends 'flashcards/base.html' %} 
+
+{% block content %}
+    <form>
+        <div class="row mb-5">
+            <div class="col-md-10">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" minlength="1" maxlength="100">
+            </div>
+            <div class="col-md-2">
+                <label class="mr-sm-2" for="visibility">Visibility</label>
+                <select class="form-select" aria-label="Select visibility" id="visibility">
+                    <option selected>Private</option>
+                    <option>Public</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flashcards">
+
+            <div class="content-section" id="flashcard1">
+                <div class="section-header d-flex justify-content-between mb-3">
+                    <div class="section-number">1</div>
+                    <div class="section-delete"><i class="fa-solid fa-trash-can"></i></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="task1" minlength="1" maxlength="250">
+                        <label class="text-muted" for="task1">Task</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="solution1" minlength="1" maxlength="250">
+                        <label class="text-muted" for="solution1">Solution</label>
+                    </div>
+                </div>
+            </div>
+            <div class="content-section" id="flashcard2">
+                <div class="section-header d-flex justify-content-between mb-3">
+                    <div class="section-number">2</div>
+                    <div class="section-delete"><i class="fa-solid fa-trash-can"></i></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="task2" minlength="1" maxlength="250">
+                        <label class="text-muted" for="task2">Task</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="solution2" minlength="1" maxlength="250">
+                        <label class="text-muted" for="solution2">Solution</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container p-0 text-center">
+            <div class="add-flashcard">
+                <i class="fa-solid fa-circle-plus"></i>
+            </div>
+        </div>
+
+        <div class="container p-0 text-end mt-5">
+            <button class="btn btn-primary align-self-right" type="submit">Save</button>
+        </div>
+
+    </form>
+{% endblock %}
