@@ -7,9 +7,7 @@ if (window.location.pathname === '/add') {
         flashcardId++;
         addFlashcard(flashcardId);
     }
-
     updateButtons();
-
 }
 
 
