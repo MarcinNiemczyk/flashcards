@@ -14,26 +14,27 @@ if (window.location.pathname === '/add') {
 
 
 function addFlashcard(id) {
+    const flashcardContainer = document.createElement('div');
+    flashcardContainer.classList.add('content-section');
+    flashcardContainer.setAttribute('id', `flashcard${id}`);
     const flashcard = `
-        <div class="content-section" id="flashcard${id}">
-            <div class="section-header d-flex justify-content-between mb-3">
-                <div class="section-number">${id}</div>
-                <div class="section-delete" name="${id}" id="delete${id}"><i class="fa-solid fa-trash-can"></i></div>
+        <div class="section-header d-flex justify-content-between mb-3">
+            <div class="section-number">${id}</div>
+            <div class="section-delete" name="${id}" id="delete${id}"><i class="fa-solid fa-trash-can"></i></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="task${id}" minlength="1" maxlength="250" required name="flashcard${id}">
+                <label class="text-muted" for="task${id}">Task</label>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="task${id}" minlength="1" maxlength="250">
-                    <label class="text-muted" for="task${id}">Task</label>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="solution${id}" minlength="1" maxlength="250">
-                    <label class="text-muted" for="solution${id}">Solution</label>
-                </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="solution${id}" minlength="1" maxlength="250" required name="flashcard${id}">
+                <label class="text-muted" for="solution${id}">Solution</label>
             </div>
         </div>
     `;
-    console.log(id);
-    document.querySelector('.flashcards').innerHTML += flashcard;
+    flashcardContainer.innerHTML += flashcard;
+    document.querySelector('.flashcards').append(flashcardContainer);
     updateOrder();
     updateButtons();
 }

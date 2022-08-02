@@ -1,15 +1,17 @@
 {% extends 'flashcards/base.html' %} 
 
 {% block content %}
-    <form>
+    <form action="{% url 'add collection' %}" method="post">
+        {% csrf_token %}
+
         <div class="row mb-5">
             <div class="col-md-10">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" minlength="1" maxlength="100">
+                <input type="text" class="form-control" id="title" minlength="1" maxlength="100" name="title">
             </div>
             <div class="col-md-2">
                 <label class="mr-sm-2" for="visibility">Visibility</label>
-                <select class="form-select" aria-label="Select visibility" id="visibility">
+                <select class="form-select" aria-label="Select visibility" id="visibility" name="visibility">
                     <option selected>Private</option>
                     <option>Public</option>
                 </select>
@@ -25,11 +27,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="task1" minlength="1" maxlength="250">
+                        <input type="text" class="form-control" id="task1" minlength="1" maxlength="250" required name="flashcard1">
                         <label class="text-muted" for="task1">Task</label>
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="solution1" minlength="1" maxlength="250">
+                        <input type="text" class="form-control" id="solution1" minlength="1" maxlength="250" required name="flashcard1">
                         <label class="text-muted" for="solution1">Solution</label>
                     </div>
                 </div>
@@ -41,11 +43,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="task2" minlength="1" maxlength="250">
+                        <input type="text" class="form-control" id="task2" minlength="1" maxlength="250" required name="flashcard2">
                         <label class="text-muted" for="task2">Task</label>
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="solution2" minlength="1" maxlength="250">
+                        <input type="text" class="form-control" id="solution2" minlength="1" maxlength="250" required name="flashcard2">
                         <label class="text-muted" for="solution2">Solution</label>
                     </div>
                 </div>
