@@ -28,6 +28,26 @@ if (window.location.pathname === '/add') {
             flashcards.push(flashcard);
         });
 
+        fetch('add', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                title: title,
+                visibility: visibility,
+                flashcards: flashcards
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                if ('error' in result) {
+                    console.log('error');
+                } else {
+                    window.location.replace('/library');
+                }
+            });
+
         event.preventDefault()
     }
 }
