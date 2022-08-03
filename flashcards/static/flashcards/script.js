@@ -15,6 +15,8 @@ if (window.location.pathname === '/add') {
     updateButtons();
 
     document.querySelector('form').onsubmit = function(event) {
+        document.querySelector('.btn-primary').setAttribute('disabled', '');
+
         const title = this.title.value;
         const visibility = this.visibility.value;
         const csrftoken = this.csrfmiddlewaretoken.value
@@ -41,13 +43,13 @@ if (window.location.pathname === '/add') {
         })
             .then(response => response.json())
             .then(result => {
+                document.querySelector('.btn-primary').removeAttribute('disabled');
                 if ('error' in result) {
-                    console.log('error');
+                    createAlert('danger', result['error']);
                 } else {
                     window.location.replace('/library');
                 }
             });
-
         event.preventDefault()
     }
 }
@@ -98,4 +100,12 @@ function updateButtons() {
             deleteFlashcard(button.getAttribute('name'));
         }
     });
+}
+
+function createAlert(category, message) {
+    const alert = document.createElement('div');
+    alert.classList.add('alert', `alert-${category}`, 'mb-5');
+    alert.setAttribute('role', 'alert');
+    alert.innerHTML = message;
+    document.querySelector('main').prepend(alert);
 }
