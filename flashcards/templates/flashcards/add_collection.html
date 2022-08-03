@@ -1,7 +1,7 @@
 {% extends 'flashcards/base.html' %} 
 
 {% block content %}
-    <form action="{% url 'add collection' %}" method="post">
+    <form>
         {% csrf_token %}
 
         <div class="row mb-5">

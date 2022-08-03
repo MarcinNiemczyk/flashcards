@@ -17,6 +17,7 @@ if (window.location.pathname === '/add') {
     document.querySelector('form').onsubmit = function(event) {
         const title = this.title.value;
         const visibility = this.visibility.value;
+        const csrftoken = this.csrfmiddlewaretoken.value
 
         const flashcards = []
         document.querySelectorAll('.content-section').forEach(content => {
@@ -26,12 +27,9 @@ if (window.location.pathname === '/add') {
             }
             flashcards.push(flashcard);
         });
-        console.log(title);
-        console.log(visibility);
-        console.log(flashcards);
+
         event.preventDefault()
     }
-
 }
 
 
