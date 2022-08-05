@@ -79,6 +79,7 @@ function addFlashcard(id) {
     document.querySelector('.flashcards').append(flashcardContainer);
     updateOrder();
     updateButtons();
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function deleteFlashcard(id) {
