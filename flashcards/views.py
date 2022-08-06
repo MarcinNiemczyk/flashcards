@@ -67,4 +67,4 @@ def add_collection(request):
             'success': 'Collection added successfully.'
         }, status=201)
 
-    return render(request, 'flashcards/add_collection.html')
+    return render(request, 'flashcards/add.html')

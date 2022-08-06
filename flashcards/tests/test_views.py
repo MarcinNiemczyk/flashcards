@@ -75,4 +75,4 @@ class AddCollectionViewTest(TestCase):
         response = self.client.get(reverse('add collection'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(str(response.context['user']), 'testuser')
-        self.assertTemplateUsed(response, 'flashcards/add_collection.html')
+        self.assertTemplateUsed(response, 'flashcards/add.html')

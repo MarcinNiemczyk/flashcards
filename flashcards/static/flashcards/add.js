@@ -1,59 +1,55 @@
+const defaultFlashcards = 2
+let flashcardId = defaultFlashcards
 
-if (window.location.pathname === '/add') {
-    const defaultFlashcards = 2
-    let flashcardId = defaultFlashcards
-
-    // Generate starting flashcards
-    for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
-        addFlashcard(flashcard);
-    }
-
-    document.querySelector('.add-flashcard').onclick = () => {
-        flashcardId++;
-        addFlashcard(flashcardId);
-    }
-    updateButtons();
-
-    document.querySelector('form').onsubmit = function(event) {
-        document.querySelector('.btn-primary').setAttribute('disabled', '');
-
-        const title = this.title.value;
-        const visibility = this.visibility.value;
-        const csrftoken = this.csrfmiddlewaretoken.value
-
-        const flashcards = []
-        document.querySelectorAll('.content-section').forEach(content => {
-            let flashcard = {
-                'task': content.querySelector('.task').value,
-                'solution': content.querySelector('.solution').value
-            }
-            flashcards.push(flashcard);
-        });
-
-        fetch('add', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify({
-                title: title,
-                visibility: visibility,
-                flashcards: flashcards
-            })
-        })
-            .then(response => response.json())
-            .then(result => {
-                document.querySelector('.btn-primary').removeAttribute('disabled');
-                if ('error' in result) {
-                    createAlert('danger', result['error']);
-                } else {
-                    window.location.replace('/library');
-                }
-            });
-        event.preventDefault()
-    }
+// Generate starting flashcards
+for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
+    addFlashcard(flashcard);
 }
 
+document.querySelector('.add-flashcard').onclick = () => {
+    flashcardId++;
+    addFlashcard(flashcardId);
+}
+updateButtons();
+
+document.querySelector('form').onsubmit = function(event) {
+    document.querySelector('.btn-primary').setAttribute('disabled', '');
+
+    const title = this.title.value;
+    const visibility = this.visibility.value;
+    const csrftoken = this.csrfmiddlewaretoken.value
+
+    const flashcards = []
+    document.querySelectorAll('.content-section').forEach(content => {
+        let flashcard = {
+            'task': content.querySelector('.task').value,
+            'solution': content.querySelector('.solution').value
+        }
+        flashcards.push(flashcard);
+    });
+
+    fetch('add', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            title: title,
+            visibility: visibility,
+            flashcards: flashcards
+        })
+    })
+        .then(response => response.json())
+        .then(result => {
+            document.querySelector('.btn-primary').removeAttribute('disabled');
+            if ('error' in result) {
+                createAlert('danger', result['error']);
+            } else {
+                window.location.replace('/library');
+            }
+        });
+    event.preventDefault()
+}
 
 function addFlashcard(id) {
     const flashcardContainer = document.createElement('div');
