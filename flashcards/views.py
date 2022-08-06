@@ -26,9 +26,9 @@ def add_collection(request):
             }, status=400)
 
         title = data['title']
-        if title.rstrip() == '' or len(title) > 150:
+        if not title.rstrip() or len(title) > 150:
             return JsonResponse({
-                'error': 'Invalid title'
+                'error': 'Title cannot be empty'
             }, status=400)
 
         visibility = data['visibility']
@@ -49,11 +49,17 @@ def add_collection(request):
         if len(flashcards) < 2:
             return JsonResponse({
                 'error': 'At least 2 flashcards required'
-            })
+            }, status=400)
         for flashcard in flashcards:
+            task = flashcard['task']
+            solution = flashcard['solution']
+            if not task.rstrip() or not solution.rstrip():
+                return JsonResponse({
+                    'error': 'Flashcards cannot be empty'
+                }, status=400)
             f = Flashcard(
-                task=flashcard['task'],
-                solution=flashcard['solution'],
+                task=task,
+                solution=solution,
                 collection=collection
             )
             f.save()
