@@ -1,5 +1,10 @@
 {% extends 'flashcards/base.html' %} 
 
 {% block content %}
-
+    <div class="add-collection">
+        <a href="{% url 'add collection' %}">Add collection</a>
+    </div>
+    <div class="collection-empty">
+        <h2 class="display-5">Your collection list is empty</h2>
+    </div>
 {% endblock %}
