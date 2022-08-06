@@ -1,0 +1,20 @@
+name: Testing
+on: push
+
+jobs:
+  test_project:
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Test models
+        run: |
+          python manage.py test flashcards.tests.test_models
+      - name: Test views
+        run: |
+          python manage.py test flashcards.tests.test_views
