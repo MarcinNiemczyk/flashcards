@@ -3,3 +3,4 @@ venv/
 migrations/
 user_images/
 .idea/
+db.sqlite3
