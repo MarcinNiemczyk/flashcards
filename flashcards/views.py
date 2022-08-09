@@ -38,6 +38,12 @@ def add_collection(request):
             }, status=400)
         public = True if visibility == 'Public' else False
 
+        flashcards = data['flashcards']
+        if len(flashcards) < 2:
+            return JsonResponse({
+                'error': 'At least 2 flashcards required'
+            }, status=400)
+
         collection = Collection(
             author=request.user,
             title=title,
@@ -45,18 +51,9 @@ def add_collection(request):
         )
         collection.save()
 
-        flashcards = data['flashcards']
-        if len(flashcards) < 2:
-            return JsonResponse({
-                'error': 'At least 2 flashcards required'
-            }, status=400)
         for flashcard in flashcards:
             task = flashcard['task']
             solution = flashcard['solution']
-            if not task.rstrip() or not solution.rstrip():
-                return JsonResponse({
-                    'error': 'Flashcards cannot be empty'
-                }, status=400)
             f = Flashcard(
                 task=task,
                 solution=solution,
