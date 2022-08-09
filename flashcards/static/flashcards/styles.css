@@ -70,3 +70,41 @@ body {
     color: rgba(0, 0, 0, 0.6);
     cursor: pointer;
 }
+
+.collection-author {
+    text-decoration: none;
+    color: darkgray;
+}
+
+@media (max-width: 768px) {
+    .collection-learn,
+    .collection-sidebar {
+        border: none !important;
+    }
+
+    .buttons-container {
+        display: block;
+        width: 100%;
+    }
+
+    .collection-buttons {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        flex-direction: row !important;
+        margin-top: 20px;
+        padding-top: 10px;
+    }
+
+    .collection-buttons button {
+        height: 40px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .collection-learn button {
+        width: 100%;
+    }
+
+    .visibility {
+        order: 1;
+    }
+}
