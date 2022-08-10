@@ -18,6 +18,7 @@ def library(request):
 @login_required
 def add_collection(request):
     if request.method == 'POST':
+        # Validate input
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
@@ -26,9 +27,13 @@ def add_collection(request):
             }, status=400)
 
         title = data['title']
-        if not title.rstrip() or len(title) > 150:
+        if not title.rstrip():
             return JsonResponse({
                 'error': 'Title cannot be empty'
+            }, status=400)
+        elif len(title) > 100:
+            return JsonResponse({
+                'error': 'Title too long'
             }, status=400)
 
         visibility = data['visibility']
@@ -44,6 +49,7 @@ def add_collection(request):
                 'error': 'At least 2 flashcards required'
             }, status=400)
 
+        # Create new collection
         collection = Collection(
             author=request.user,
             title=title,
@@ -51,6 +57,7 @@ def add_collection(request):
         )
         collection.save()
 
+        # Add flashcards
         for flashcard in flashcards:
             task = flashcard['task']
             solution = flashcard['solution']
