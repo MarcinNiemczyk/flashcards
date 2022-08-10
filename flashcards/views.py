@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.db.models import Q
 from .models import Collection, Flashcard
 
 
@@ -12,7 +13,13 @@ def explore(request):
 
 @login_required
 def library(request):
-    return render(request, 'flashcards/library.html')
+    collections = Collection.objects.filter(
+        Q(author=request.user)
+        | Q(followers=request.user)
+    ).order_by('-id')
+    return render(request, 'flashcards/library.html', {
+        'collections': collections
+    })
 
 
 @login_required

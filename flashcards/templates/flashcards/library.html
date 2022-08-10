@@ -4,45 +4,52 @@
     <div class="add-collection mb-5">
         <a href="{% url 'add collection' %}">Add collection</a>
     </div>
-{#    <div class="collection-empty">#}
-{#        <h2 class="display-5">Your collection list is empty</h2>#}
-{#    </div>#}
 
-    <div class="content-section w-100 mb-3">
-        <div class="row">
-            <div class="collection-learn col-md-2 border-end">
-                <div class="d-flex justify-content-center align-items-center h-100">
-                    <button class="btn btn-lg btn-outline-dark">Learn</button>
-                </div>
-            </div>
-            <div class="col-md-8 p-3">
-                <div class="d-flex flex-column justify-content-between h-100 mt-3">
-                    <h3 class="display-5">English flashcards #1</h3>
-                    <div>
-                        <a href="" class="collection-author">
-                            <img class="rounded-circle border" src="https://i.imgur.com/BUqVpp3.png" width="20px" height="20px">
-                            author
-                        </a>
+    {% for collection in collections %}
+        <div class="content-section w-100 mb-3">
+            <div class="row">
+                <div class="collection-learn col-md-2 border-end">
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <a class="btn btn-lg btn-outline-dark" href="">Learn</a>
                     </div>
                 </div>
-            </div>
-            <div class="collection-sidebar col-md-2 border-start">
-                <div class="d-flex flex-column align-items-center">
-                    <div class="visibility align-self-end">
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                    <div class="buttons-container d-grid col-8 mb-2 mt-2">
-                        <div class="collection-buttons d-flex flex-column justify-content-center">
-                            <button class="btn btn-sm btn-warning m-1" type="button">Edit</button>
-                            <button class="btn btn-sm btn-primary m-1" type="button">Details</button>
+                <div class="col-md-8 p-3">
+                    <div class="d-flex flex-column justify-content-between h-100 mt-3">
+                        <h3 class="display-5">{{ collection.title }}</h3>
+                        <div>
+                            <a href="" class="collection-author">
+                                <img class="rounded-circle border" src="{{ collection.author.image.url }}" width="20px" height="20px">
+                                {{ collection.author.username }}
+                            </a>
                         </div>
                     </div>
-                    <div>
-                        Students: 0
+                </div>
+                <div class="collection-sidebar col-md-2 border-start">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="visibility align-self-end">
+                            {% if collection.public %}
+                                <i class="fa-solid fa-lock-open"></i>
+                            {% else %}
+                                <i class="fa-solid fa-lock"></i>
+                            {% endif %}
+                        </div>
+                        <div class="buttons-container d-grid col-8 mb-2 mt-2">
+                            <div class="collection-buttons d-flex flex-column justify-content-center">
+                                <a class="btn btn-sm btn-outline-warning m-1" href="">Edit</a>
+                                <a class="btn btn-sm btn-outline-primary m-1" href="">Details</a>
+                            </div>
+                        </div>
+                        <div>
+                            Students: 0
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% empty %}
+        <div class="collection-empty">
+            <h2 class="display-5">Your collection list is empty</h2>
+        </div>
+    {% endfor %}
 
 {% endblock %}
