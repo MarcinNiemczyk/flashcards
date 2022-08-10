@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
 from .models import Collection, Flashcard, Log
@@ -20,8 +20,13 @@ def library(request):
         | Q(collection__followers=request.user)
     ).order_by('-timestamp')
 
+    collections = [log.collection for log in logs]
+    paginator = Paginator(collections, 10)
+    page_number = request.GET.get('page')
+    page_library = paginator.get_page(page_number)
+
     return render(request, 'flashcards/library.html', {
-        'collections': [log.collection for log in logs]
+        'collections': page_library
     })
 
 

@@ -50,6 +50,3 @@ class Log(models.Model):
 
     def __str__(self):
         return f"{self.visitor.username} - {self.collection.title}"
-
-    def get_time(self):
-        return self.timestamp.strftime('%b %d %Y, %I:%M %p')
