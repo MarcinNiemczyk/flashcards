@@ -32,9 +32,9 @@ class CollectionModelTest(TestCase):
         collection = Collection.objects.get(id=1)
         self.assertFalse(collection.reversed)
 
-    def test_object_name_is_title(self):
+    def test_object_name_is_correct(self):
         collection = Collection.objects.get(id=1)
-        expected_object_name = collection.title
+        expected_object_name = f"{collection.title} ({collection.id})"
         self.assertEqual(str(collection), expected_object_name)
 
 
@@ -65,7 +65,7 @@ class FlashcardModelTest(TestCase):
         max_length = flashcard._meta.get_field('solution').max_length
         self.assertEqual(max_length, 250)
 
-    def test_object_name_is_hashtag_id(self):
+    def test_object_name_is_correct(self):
         flashcard = Flashcard.objects.get(id=1)
         expected_object_name = f'#{flashcard.id}'
         self.assertEqual(str(flashcard), expected_object_name)

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import Collection, Flashcard
+from .models import Collection, Flashcard, Log
 
 
 def explore(request):
@@ -13,12 +13,15 @@ def explore(request):
 
 @login_required
 def library(request):
-    collections = Collection.objects.filter(
-        Q(author=request.user)
-        | Q(followers=request.user)
-    ).order_by('-id')
+    # Sort collections by latest visit
+    logs = Log.objects.filter(
+        visitor=request.user).select_related('visitor').filter(
+        Q(collection__author=request.user)
+        | Q(collection__followers=request.user)
+    ).order_by('-timestamp')
+
     return render(request, 'flashcards/library.html', {
-        'collections': collections
+        'collections': [log.collection for log in logs]
     })
 
 
@@ -74,6 +77,11 @@ def add_collection(request):
                 collection=collection
             )
             f.save()
+
+        # Update latest visit as creation time
+        visit = Log(visitor=request.user, collection=collection)
+        visit.save()
+
         return JsonResponse({
             'success': 'Collection added successfully.'
         }, status=201)

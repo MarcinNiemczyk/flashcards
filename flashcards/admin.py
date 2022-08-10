@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Flashcard, Collection
+from .models import Collection, Flashcard, Log
 
 
 class FlashcardInline(admin.StackedInline):
@@ -11,8 +11,14 @@ class FlashcardInline(admin.StackedInline):
 class CollectionAdmin(admin.ModelAdmin):
     filter_horizontal = ('followers',)
     list_display = ('title', 'author', 'public')
+    list_filter = ('public',)
+    save_on_top = True
+    search_fields = ('title',)
     inlines = [
         FlashcardInline,
     ]
-    search_fields = ('title',)
-    list_filter = ('public',)
+
+
+@admin.register(Log)
+class VisitAdmin(admin.ModelAdmin):
+    list_display = ('id', 'visitor', 'collection', 'timestamp')
