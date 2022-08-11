@@ -27,15 +27,23 @@
                 <div class="collection-sidebar col-md-2 border-start">
                     <div class="d-flex flex-column align-items-center">
                         <div class="visibility align-self-end">
-                            {% if collection.public %}
-                                <i class="fa-solid fa-lock-open"></i>
+                            {% if collection.author == request.user %}
+                                {% if collection.public %}
+                                    <i class="fa-solid fa-lock-open"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-lock"></i>
+                                {% endif %}
                             {% else %}
-                                <i class="fa-solid fa-lock"></i>
+                                <i class="fa-solid fa-copy"></i>
                             {% endif %}
                         </div>
                         <div class="buttons-container d-grid col-8 mb-2 mt-2">
                             <div class="collection-buttons d-flex flex-column justify-content-center">
-                                <a class="btn btn-sm btn-outline-warning m-1" href="">Edit</a>
+                                {% if collection.author == request.user %}
+                                    <a class="btn btn-sm btn-outline-warning m-1" href="">Edit</a>
+                                {% else %}
+                                    <button class="btn btn-sm btn-outline-danger m-1">Remove</button>
+                                {% endif %}
                                 <a class="btn btn-sm btn-outline-primary m-1" href="">Details</a>
                             </div>
                         </div>
