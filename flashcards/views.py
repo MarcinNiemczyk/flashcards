@@ -8,19 +8,23 @@ from .models import Collection, Flashcard, Log
 
 
 def explore(request):
-    return render(request, 'flashcards/explore.html')
+    collections = Collection.objects.filter(public=True).order_by('-id').all()
+
+    return render(request, 'flashcards/explore.html', {
+        'collections': collections
+    })
 
 
 @login_required
 def library(request):
     # Sort collections by latest visit
-    logs = Log.objects.filter(
+    items = Log.objects.filter(
         visitor=request.user).select_related('visitor').filter(
         Q(collection__author=request.user)
         | Q(collection__followers=request.user)
     ).order_by('-timestamp')
 
-    collections = [log.collection for log in logs]
+    collections = [item.collection for item in items]
     paginator = Paginator(collections, 10)
     page_number = request.GET.get('page')
     page_library = paginator.get_page(page_number)
