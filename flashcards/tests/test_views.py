@@ -7,6 +7,40 @@ from flashcards.models import Collection, Log
 
 
 class ExploreViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        testuser1 = User.objects.create_user(
+            username='testuser1',
+            password='7,a}MXe+oTJL'
+        )
+        testuser2 = User.objects.create_user(
+            username='testuser2',
+            password='NqCJAB}N~@Wg'
+        )
+
+        number_of_collections = 13
+        for collection_id in range(number_of_collections):
+            Collection.objects.create(
+                title=f'Testuser1 collection {collection_id + 1}',
+                author=testuser1,
+                public=True
+            )
+        Collection.objects.create(
+            author=testuser2,
+            title='Testuser2 collection',
+            public=True
+        )
+
+        # Add one non-public collection per user
+        Collection.objects.create(
+            author=testuser1,
+            title='Testuser1 private collection',
+        )
+        Collection.objects.create(
+            author=testuser2,
+            title='Testuser2 private collection',
+        )
+
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
@@ -19,6 +53,28 @@ class ExploreViewTest(TestCase):
         response = self.client.get(reverse('explore'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'flashcards/explore.html')
+
+    def test_pagination_is_ten(self):
+        response = self.client.get(reverse('explore'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 10)
+
+    def test_lists_all_collections(self):
+        response = self.client.get(reverse('explore') + '?page=2')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 4)
+
+    def test_user_cannot_see_own_collections(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('explore'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 1)
+
+    def test_collections_order_by_reversed_id(self):
+        response = self.client.get(reverse('explore'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collections'][0], Collection.objects.get(id=14))
+        self.assertEqual(response.context['collections'][1], Collection.objects.get(id=13))
 
 
 class LibraryViewTest(TestCase):

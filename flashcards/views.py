@@ -8,8 +8,15 @@ from .models import Collection, Flashcard, Log
 
 
 def explore(request):
-    collections = Collection.objects.filter(public=True).order_by('-id').all()
+    collections = Collection.objects.filter(public=True).order_by('-id')
 
+    # Ensure user's own collections are not displayed
+    if request.user.is_authenticated:
+        collections = collections.exclude(author=request.user).all()
+    else:
+        collections = collections.all()
+
+    # Set pagination
     paginator = Paginator(collections, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -28,7 +35,10 @@ def library(request):
         | Q(collection__followers=request.user)
     ).order_by('-timestamp')
 
+    # Grab collections from sorted by log date items
     collections = [item.collection for item in items]
+
+    # Set pagination
     paginator = Paginator(collections, 10)
     page_number = request.GET.get('page')
     page_library = paginator.get_page(page_number)
