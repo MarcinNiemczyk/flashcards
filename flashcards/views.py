@@ -10,8 +10,12 @@ from .models import Collection, Flashcard, Log
 def explore(request):
     collections = Collection.objects.filter(public=True).order_by('-id').all()
 
+    paginator = Paginator(collections, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'flashcards/explore.html', {
-        'collections': collections
+        'collections': page_obj
     })
 
 
