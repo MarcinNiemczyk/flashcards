@@ -48,7 +48,9 @@
                             </div>
                         </div>
                         <div>
-                            Students: 0
+                            {% if collection.public == True %}
+                                Followers: 0
+                            {% endif %}
                         </div>
                     </div>
                 </div>
