@@ -6,19 +6,64 @@ for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
     addFlashcard(flashcard);
 }
 
+// Select language
+const selected = document.querySelector('.selected');
+const optionsContainer = document.querySelector('.options-container');
+const searchBox = document.querySelector('.search-box input');
+
+const optionsList = document.querySelectorAll('.option');
+
+selected.addEventListener('click', () => {
+    optionsContainer.classList.toggle('active');
+    searchBox.value = '';
+    filterList('');
+    if (optionsContainer.classList.contains('active')) {
+        searchBox.focus();
+    }
+});
+
+optionsList.forEach(option => {
+    option.addEventListener('click', () => {
+        selected.innerHTML = option.querySelector("label").innerHTML;
+        optionsContainer.classList.remove('active');
+    });
+});
+
+searchBox.addEventListener('keyup', function(event) {
+    filterList(event.target.value);
+});
+
+const filterList = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    optionsList.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) > -1) {
+            option.style.display = 'block';
+        } else {
+            option.style.display = 'none';
+        }
+    });
+}
+
+
+// Add flashcard button
 document.querySelector('.add-flashcard').onclick = () => {
     flashcardId++;
     addFlashcard(flashcardId);
 }
 updateButtons();
 
+// Save collection
 document.querySelector('form').onsubmit = function(event) {
+    // Temporarily block save button until server responds
     document.querySelector('.btn-primary').setAttribute('disabled', '');
 
+    // Load form data
     const title = this.title.value;
     const visibility = this.visibility.value;
     const csrftoken = this.csrfmiddlewaretoken.value
 
+    // Make every flashcard and add to array
     const flashcards = []
     document.querySelectorAll('.content-section').forEach(content => {
         let flashcard = {
@@ -28,6 +73,7 @@ document.querySelector('form').onsubmit = function(event) {
         flashcards.push(flashcard);
     });
 
+    // Send add collection request
     fetch('add', {
         method: 'POST',
         headers: {
