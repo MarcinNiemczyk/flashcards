@@ -8,13 +8,14 @@ from .models import Collection, Flashcard, Log
 
 
 def explore(request):
-    collections = Collection.objects.filter(public=True).order_by('-id')
 
     # Ensure user's own collections are not displayed
     if request.user.is_authenticated:
-        collections = collections.exclude(author=request.user).all()
+        collections = Collection.objects.filter(
+            public=True).exclude(author=request.user).order_by('-id').all()
     else:
-        collections = collections.all()
+        collections = Collection.objects.filter(
+            public=True).order_by('-id').all()
 
     # Set pagination
     paginator = Paginator(collections, 10)
@@ -59,8 +60,8 @@ def add_collection(request):
                 'error': 'Invalid request'
             }, status=400)
 
-        title = data['title']
-        if not title.rstrip():
+        title = data['title'].rstrip()
+        if not title:
             return JsonResponse({
                 'error': 'Title cannot be empty'
             }, status=400)
