@@ -14,6 +14,9 @@ const questionSearchBox = document.querySelector('.question-search input');
 const questionLanguages = document.querySelectorAll('.question-language');
 
 selectedQuestionLanguage.addEventListener('click', () => {
+    if (answerLanguagesContainer.classList.contains('active')) {
+        answerLanguagesContainer.classList.remove('active');
+    }
     questionLanguagesContainer.classList.toggle('active');
     questionSearchBox.value = '';
     filterQuestionLanguage('');
@@ -24,7 +27,7 @@ selectedQuestionLanguage.addEventListener('click', () => {
 
 questionLanguages.forEach(option => {
     option.addEventListener('click', () => {
-        selectedQuestionLanguage.innerHTML = option.querySelector("label").innerHTML;
+        selectedQuestionLanguage.innerHTML = option.querySelector('label').innerHTML;
         questionLanguagesContainer.classList.remove('active');
     });
 });
@@ -54,6 +57,9 @@ const answerSearchBox = document.querySelector('.answer-search input');
 const answerLanguages = document.querySelectorAll('.answer-language');
 
 selectedAnswerLanguage.addEventListener('click', () => {
+    if (questionLanguagesContainer.classList.contains('active')) {
+        questionLanguagesContainer.classList.remove('active');
+    }
     answerLanguagesContainer.classList.toggle('active');
     answerSearchBox.value = '';
     filterAnswerLanguage('');
@@ -64,7 +70,7 @@ selectedAnswerLanguage.addEventListener('click', () => {
 
 answerLanguages.forEach(option => {
     option.addEventListener('click', () => {
-        selectedAnswerLanguage.innerHTML = option.querySelector("label").innerHTML;
+        selectedAnswerLanguage.innerHTML = option.querySelector('label').innerHTML;
         answerLanguagesContainer.classList.remove('active');
     });
 });
