@@ -14,6 +14,8 @@ class Collection(models.Model):
         related_name='following',
         blank=True
     )
+    language1 = models.CharField(max_length=50)
+    language2 = models.CharField(max_length=50)
     public = models.BooleanField(default=False)
     randomized = models.BooleanField(default=False)
     reversed = models.BooleanField(default=False)

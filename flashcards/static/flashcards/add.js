@@ -107,6 +107,8 @@ document.querySelector('form').onsubmit = function(event) {
     // Load form data
     const title = this.title.value;
     const visibility = this.visibility.value;
+    const language1 = selectedQuestionLanguage.innerHTML
+    const language2 = selectedAnswerLanguage.innerHTML
     const csrftoken = this.csrfmiddlewaretoken.value
 
     // Make every flashcard and add to array
@@ -128,6 +130,8 @@ document.querySelector('form').onsubmit = function(event) {
         body: JSON.stringify({
             title: title,
             visibility: visibility,
+            language1: language1,
+            language2: language2,
             flashcards: flashcards
         })
     })

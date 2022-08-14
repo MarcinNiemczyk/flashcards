@@ -78,6 +78,18 @@ def add_collection(request):
             }, status=400)
         public = True if visibility == 'Public' else False
 
+        language1 = data['language1']
+        if language1 not in LANGUAGES:
+            return JsonResponse({
+                'error': 'Invalid question language'
+            }, status=400)
+
+        language2 = data['language2']
+        if language2 not in LANGUAGES:
+            return JsonResponse({
+                'error': 'Invalid answer language'
+            }, status=400)
+
         flashcards = data['flashcards']
         if len(flashcards) < 2:
             return JsonResponse({
@@ -88,7 +100,9 @@ def add_collection(request):
         collection = Collection(
             author=request.user,
             title=title,
-            public=public
+            public=public,
+            language1=language1,
+            language2=language2
         )
         collection.save()
 
