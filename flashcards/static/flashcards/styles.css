@@ -76,6 +76,15 @@ body {
     text-decoration: none;
 }
 
+.collection-sidebar p {
+    margin: 0;
+}
+
+.collection-sidebar p i {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.8);
+}
+
 .select-box {
     position: relative;
 }
