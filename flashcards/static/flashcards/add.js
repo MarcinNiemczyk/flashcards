@@ -6,36 +6,76 @@ for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
     addFlashcard(flashcard);
 }
 
-// Select language
-const selected = document.querySelector('.selected');
-const optionsContainer = document.querySelector('.options-container');
-const searchBox = document.querySelector('.search-box input');
+// Select question language dropdown menu
+const selectedQuestionLanguage = document.querySelector('.selected-question');
+const questionLanguagesContainer = document.querySelector('.question-container');
+const questionSearchBox = document.querySelector('.question-search input');
 
-const optionsList = document.querySelectorAll('.option');
+const questionLanguages = document.querySelectorAll('.question-language');
 
-selected.addEventListener('click', () => {
-    optionsContainer.classList.toggle('active');
-    searchBox.value = '';
-    filterList('');
-    if (optionsContainer.classList.contains('active')) {
-        searchBox.focus();
+selectedQuestionLanguage.addEventListener('click', () => {
+    questionLanguagesContainer.classList.toggle('active');
+    questionSearchBox.value = '';
+    filterQuestionLanguage('');
+    if (questionLanguagesContainer.classList.contains('active')) {
+        questionSearchBox.focus();
     }
 });
 
-optionsList.forEach(option => {
+questionLanguages.forEach(option => {
     option.addEventListener('click', () => {
-        selected.innerHTML = option.querySelector("label").innerHTML;
-        optionsContainer.classList.remove('active');
+        selectedQuestionLanguage.innerHTML = option.querySelector("label").innerHTML;
+        questionLanguagesContainer.classList.remove('active');
     });
 });
 
-searchBox.addEventListener('keyup', function(event) {
-    filterList(event.target.value);
+questionSearchBox.addEventListener('keyup', function(event) {
+    filterQuestionLanguage(event.target.value);
 });
 
-const filterList = searchTerm => {
+const filterQuestionLanguage = searchTerm => {
     searchTerm = searchTerm.toLowerCase();
-    optionsList.forEach(option => {
+    questionLanguages.forEach(option => {
+        let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
+        if (label.indexOf(searchTerm) > -1) {
+            option.style.display = 'block';
+        } else {
+            option.style.display = 'none';
+        }
+    });
+}
+
+
+// Select answer language dropdown menu
+const selectedAnswerLanguage = document.querySelector('.selected-answer');
+const answerLanguagesContainer = document.querySelector('.answer-container');
+const answerSearchBox = document.querySelector('.answer-search input');
+
+const answerLanguages = document.querySelectorAll('.answer-language');
+
+selectedAnswerLanguage.addEventListener('click', () => {
+    answerLanguagesContainer.classList.toggle('active');
+    answerSearchBox.value = '';
+    filterAnswerLanguage('');
+    if (answerLanguagesContainer.classList.contains('active')) {
+        answerSearchBox.focus();
+    }
+});
+
+answerLanguages.forEach(option => {
+    option.addEventListener('click', () => {
+        selectedAnswerLanguage.innerHTML = option.querySelector("label").innerHTML;
+        answerLanguagesContainer.classList.remove('active');
+    });
+});
+
+answerSearchBox.addEventListener('keyup', function(event) {
+    filterAnswerLanguage(event.target.value);
+});
+
+const filterAnswerLanguage = searchTerm => {
+    searchTerm = searchTerm.toLowerCase();
+    answerLanguages.forEach(option => {
         let label = option.firstElementChild.nextElementSibling.innerText.toLowerCase();
         if (label.indexOf(searchTerm) > -1) {
             option.style.display = 'block';
