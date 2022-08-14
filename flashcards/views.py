@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
-from flashcards import LANGUAGES
+from flashcards import LANGUAGES, MIN_FLASHCARDS
 from .models import Collection, Flashcard, Log
 
 
@@ -61,7 +61,7 @@ def add_collection(request):
                 'error': 'Invalid request'
             }, status=400)
 
-        # Ensure request is valid
+        # Prevent client from sending wrong request data
         try:
             title = data['title'].rstrip()
             visibility = data['visibility']
@@ -73,6 +73,7 @@ def add_collection(request):
                 'error': 'Invalid data request'
             }, status=400)
 
+        # Ensure title length is correct
         if not title:
             return JsonResponse({
                 'error': 'Title cannot be empty'
@@ -82,25 +83,27 @@ def add_collection(request):
                 'error': 'Title too long'
             }, status=400)
 
+        # Validate visibility
         if visibility != 'Public' and visibility != 'Private':
             return JsonResponse({
                 'error': 'Invalid visibility'
             }, status=400)
         public = True if visibility == 'Public' else False
 
+        # Ensure languages are listed
         if language1 not in LANGUAGES:
             return JsonResponse({
                 'error': 'Invalid question language'
             }, status=400)
-
         if language2 not in LANGUAGES:
             return JsonResponse({
                 'error': 'Invalid answer language'
             }, status=400)
 
-        if len(flashcards) < 2:
+        # Check minimum flashcards per collection
+        if len(flashcards) < MIN_FLASHCARDS:
             return JsonResponse({
-                'error': 'At least 2 flashcards required'
+                'error': f'At least {MIN_FLASHCARDS} flashcards required'
             }, status=400)
 
         # Create new collection

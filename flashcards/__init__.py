@@ -1,3 +1,6 @@
+# Minimum flashcards per collection
+MIN_FLASHCARDS = 2
+
 LANGUAGES = (
     "Afrikaans",
     "Albanian",

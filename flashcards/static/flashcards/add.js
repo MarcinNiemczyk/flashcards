@@ -6,13 +6,12 @@ for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
     addFlashcard(flashcard);
 }
 
-// Select question language dropdown menu
 const selectedQuestionLanguage = document.querySelector('.selected-question');
 const questionLanguagesContainer = document.querySelector('.question-container');
 const questionSearchBox = document.querySelector('.question-search input');
-
 const questionLanguages = document.querySelectorAll('.question-language');
 
+// Question language dropdown menu
 selectedQuestionLanguage.addEventListener('click', () => {
     if (answerLanguagesContainer.classList.contains('active')) {
         answerLanguagesContainer.classList.remove('active');
@@ -25,6 +24,7 @@ selectedQuestionLanguage.addEventListener('click', () => {
     }
 });
 
+// Change selected question language
 questionLanguages.forEach(option => {
     option.addEventListener('click', () => {
         selectedQuestionLanguage.innerHTML = option.querySelector('label').innerHTML;
@@ -32,10 +32,10 @@ questionLanguages.forEach(option => {
     });
 });
 
+// Question language search bar
 questionSearchBox.addEventListener('keyup', function(event) {
     filterQuestionLanguage(event.target.value);
 });
-
 const filterQuestionLanguage = searchTerm => {
     searchTerm = searchTerm.toLowerCase();
     questionLanguages.forEach(option => {
@@ -48,14 +48,12 @@ const filterQuestionLanguage = searchTerm => {
     });
 }
 
-
-// Select answer language dropdown menu
 const selectedAnswerLanguage = document.querySelector('.selected-answer');
 const answerLanguagesContainer = document.querySelector('.answer-container');
 const answerSearchBox = document.querySelector('.answer-search input');
-
 const answerLanguages = document.querySelectorAll('.answer-language');
 
+// Answer language dropdown menu
 selectedAnswerLanguage.addEventListener('click', () => {
     if (questionLanguagesContainer.classList.contains('active')) {
         questionLanguagesContainer.classList.remove('active');
@@ -68,6 +66,7 @@ selectedAnswerLanguage.addEventListener('click', () => {
     }
 });
 
+// Change selected answer language
 answerLanguages.forEach(option => {
     option.addEventListener('click', () => {
         selectedAnswerLanguage.innerHTML = option.querySelector('label').innerHTML;
@@ -75,10 +74,10 @@ answerLanguages.forEach(option => {
     });
 });
 
+// Answer language search bar
 answerSearchBox.addEventListener('keyup', function(event) {
     filterAnswerLanguage(event.target.value);
 });
-
 const filterAnswerLanguage = searchTerm => {
     searchTerm = searchTerm.toLowerCase();
     answerLanguages.forEach(option => {
@@ -91,7 +90,6 @@ const filterAnswerLanguage = searchTerm => {
     });
 }
 
-
 // Add flashcard button
 document.querySelector('.add-flashcard').onclick = () => {
     flashcardId++;
@@ -101,17 +99,14 @@ updateButtons();
 
 // Save collection
 document.querySelector('form').onsubmit = function(event) {
-    // Temporarily block save button until server responds
     document.querySelector('.btn-primary').setAttribute('disabled', '');
 
-    // Load form data
     const title = this.title.value;
     const visibility = this.visibility.value;
     const language1 = selectedQuestionLanguage.innerHTML
     const language2 = selectedAnswerLanguage.innerHTML
     const csrftoken = this.csrfmiddlewaretoken.value
 
-    // Make every flashcard and add to array
     const flashcards = []
     document.querySelectorAll('.content-section').forEach(content => {
         let flashcard = {
@@ -121,7 +116,6 @@ document.querySelector('form').onsubmit = function(event) {
         flashcards.push(flashcard);
     });
 
-    // Send add collection request
     fetch('add', {
         method: 'POST',
         headers: {
