@@ -53,7 +53,7 @@ def library(request):
 @login_required
 def add_collection(request):
     if request.method == 'POST':
-        # Validate input
+        # Load data
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
@@ -61,7 +61,18 @@ def add_collection(request):
                 'error': 'Invalid request'
             }, status=400)
 
-        title = data['title'].rstrip()
+        # Ensure request is valid
+        try:
+            title = data['title'].rstrip()
+            visibility = data['visibility']
+            language1 = data['language1']
+            language2 = data['language2']
+            flashcards = data['flashcards']
+        except KeyError:
+            return JsonResponse({
+                'error': 'Invalid data request'
+            }, status=400)
+
         if not title:
             return JsonResponse({
                 'error': 'Title cannot be empty'
@@ -71,26 +82,22 @@ def add_collection(request):
                 'error': 'Title too long'
             }, status=400)
 
-        visibility = data['visibility']
         if visibility != 'Public' and visibility != 'Private':
             return JsonResponse({
                 'error': 'Invalid visibility'
             }, status=400)
         public = True if visibility == 'Public' else False
 
-        language1 = data['language1']
         if language1 not in LANGUAGES:
             return JsonResponse({
                 'error': 'Invalid question language'
             }, status=400)
 
-        language2 = data['language2']
         if language2 not in LANGUAGES:
             return JsonResponse({
                 'error': 'Invalid answer language'
             }, status=400)
 
-        flashcards = data['flashcards']
         if len(flashcards) < 2:
             return JsonResponse({
                 'error': 'At least 2 flashcards required'
