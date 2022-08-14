@@ -20,9 +20,6 @@
         </div>
         <div class="row mb-4">
             <div class="col-md-6 mb-2">
-
-
-
                     <div class="select-box mb-3">
                         <label class="text-muted">Question in</label>
                         <div class="selected selected-question">
@@ -32,37 +29,16 @@
                             <div class="search-box question-search">
                                 <input type="text" placeholder="Search..." >
                             </div>
-                            <div class="option question-language" id="option1">
-                              <input type="radio" class="radio" name="language" id="english">
-                              <label for="english">English</label>
-                            </div>
-                            <div class="option question-language">
-                              <input type="radio" class="radio" name="language" id="polish">
-                              <label for="polish">Polish</label>
-                            </div>
-                            <div class="option question-language">
-                              <input type="radio" class="radio" name="language" id="hungarian">
-                              <label for="hungarian">Hungarian</label>
-                            </div>
-                            <div class="option question-language">
-                              <input type="radio"class="radio" name="language" id="bulgarian">
-                              <label for="bulgarian">Bulgarian</label>
-                            </div>
-                            <div class="option question-language">
-                              <input type="radio" class="radio" name="language" id="german">
-                              <label for="german">German</label>
-                            </div>
-                            <div class="option question-language">
-                              <input type="radio" class="radio" name="language" id="russian">
-                              <label for="russian">Russian</label>
-                            </div>
+                            {% for language in languages %}
+                                <div class="option question-language">
+                                  <input type="radio" class="radio" name="language1" id="{{ language }}">
+                                  <label for="{{ language }}">{{ language }}</label>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
-
-
             </div>
             <div class="col-md-6 mb-2">
-
                     <div class="select-box mb-3">
                         <label class="text-muted">Answer by</label>
                         <div class="selected selected-answer">
@@ -72,33 +48,14 @@
                             <div class="search-box answer-search">
                                 <input type="text" placeholder="Search..." >
                             </div>
-                            <div class="option answer-language" id="option1">
-                              <input type="radio" class="radio" name="language" id="english">
-                              <label for="english">English</label>
-                            </div>
-                            <div class="option answer-language">
-                              <input type="radio" class="radio" name="language" id="polish">
-                              <label for="polish">Polish</label>
-                            </div>
-                            <div class="option answer-language">
-                              <input type="radio" class="radio" name="language" id="hungarian">
-                              <label for="hungarian">Hungarian</label>
-                            </div>
-                            <div class="option answer-language">
-                              <input type="radio"class="radio" name="language" id="bulgarian">
-                              <label for="bulgarian">Bulgarian</label>
-                            </div>
-                            <div class="option answer-language">
-                              <input type="radio" class="radio" name="language" id="german">
-                              <label for="german">German</label>
-                            </div>
-                            <div class="option answer-language">
-                              <input type="radio" class="radio" name="language" id="russian">
-                              <label for="russian">Russian</label>
-                            </div>
+                            {% for language in languages %}
+                                <div class="option answer-language">
+                                  <input type="radio" class="radio" name="language2" id="{{ language }}">
+                                  <label for="{{ language }}">{{ language }}</label>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
-
             </div>
         </div>
         <div class="flashcards">

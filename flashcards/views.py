@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
+from flashcards import LANGUAGES
 from .models import Collection, Flashcard, Log
 
 
@@ -110,4 +111,6 @@ def add_collection(request):
             'success': 'Collection added successfully.'
         }, status=201)
 
-    return render(request, 'flashcards/add.html')
+    return render(request, 'flashcards/add.html', {
+        'languages': LANGUAGES
+    })

@@ -150,7 +150,7 @@ body {
 
 .select-box .options-container.active {
     display: block;
-    max-height: 240px;
+    max-height: 300px;
     overflow-y: scroll;
 }
 
