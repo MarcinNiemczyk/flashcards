@@ -175,6 +175,14 @@ body {
     border-radius: 8px 8px 8px 8px;
 }
 
+.filter-collections {
+    display: none;
+}
+
+.filter-collections.active {
+    display: block;
+}
+
 
 @media (max-width: 768px) {
     .collection-learn,

@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
 from .models import Collection, Flashcard, Log
+from .filters import CollectionFilter
 
 
 def explore(request):
@@ -18,13 +19,16 @@ def explore(request):
         collections = Collection.objects.filter(
             public=True).order_by('-id').all()
 
+    collections_filter = CollectionFilter(request.GET, queryset=collections)
+
     # Set pagination
-    paginator = Paginator(collections, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    # paginator = Paginator(collections, 10)
+    # page_number = request.GET.get('page')
+    # page_obj = paginator.get_page(page_number)
+
 
     return render(request, 'flashcards/explore.html', {
-        'collections': page_obj
+        'collections': collections_filter
     })
 
 
