@@ -8,14 +8,14 @@
         <div class="col-md-5">
             <button class="btn btn-outline-secondary w-100" id="filter-toggle">Filter</button>
             <form class="mb-3 mt-4 filter-collections" method="get">
-                {{ collections.form|crispy }}
+                {{ filter.form|crispy }}
                 <button class="btn btn-danger mt-3" type="submit">Filter</button>
             </form>
         </div>
     </div>
 
 
-    {% for collection in collections.qs %}
+    {% for collection in collections %}
         {% if request.user != collection.author %}
             <div class="content-section w-100 mb-3">
                 <div class="row">
@@ -72,29 +72,29 @@
             <ul class="pagination">
                 {% if collections.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1" aria-disabled="true">&laquo;</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page=1" aria-disabled="true">&laquo;</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.previous_page_number }}">Previous</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.previous_page_number }}">Previous</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.previous_page_number }}">{{ collections.previous_page_number }}</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.previous_page_number }}">{{ collections.previous_page_number }}</a>
                     </li>
                 {% endif %}
 
                 <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="?page={{ collections.number }}">{{ collections.number }}</a>
+                    <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.number }}">{{ collections.number }}</a>
                 </li>
 
                 {% if collections.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.next_page_number }}">{{ collections.next_page_number }}</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.next_page_number }}">{{ collections.next_page_number }}</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.next_page_number }}">Next</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.next_page_number }}">Next</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.paginator.num_pages }}">&raquo;</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.paginator.num_pages }}">&raquo;</a>
                     </li>
                 {% endif %}
             </ul>

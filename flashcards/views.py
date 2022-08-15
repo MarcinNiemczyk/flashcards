@@ -22,13 +22,19 @@ def explore(request):
     collections_filter = CollectionFilter(request.GET, queryset=collections)
 
     # Set pagination
-    # paginator = Paginator(collections, 10)
-    # page_number = request.GET.get('page')
-    # page_obj = paginator.get_page(page_number)
+    paginator = Paginator(collections_filter.qs, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
+    # Remove page from query to add filter while switching pages
+    request_without_page = request.GET.copy()
+    if 'page' in request_without_page:
+        del request_without_page['page']
+    request.GET = request_without_page
 
     return render(request, 'flashcards/explore.html', {
-        'collections': collections_filter
+        'filter': collections_filter,
+        'collections': page_obj
     })
 
 
@@ -115,8 +121,8 @@ def add_collection(request):
             author=request.user,
             title=title,
             public=public,
-            language1=language1,
-            language2=language2
+            language1=language1.lower(),
+            language2=language2.lower()
         )
         collection.save()
 
