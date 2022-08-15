@@ -49,7 +49,7 @@
                         </div>
                         <div>
                             {% if collection.public == True %}
-                                Followers: 0
+                                Followers: {{ collection.followers.count }}
                             {% endif %}
                         </div>
                     </div>

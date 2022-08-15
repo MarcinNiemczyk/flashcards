@@ -72,9 +72,117 @@ body {
 }
 
 .collection-author {
-    text-decoration: none;
     color: darkgray;
+    text-decoration: none;
 }
+
+.collection-sidebar p {
+    margin: 0;
+}
+
+.collection-sidebar p i {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.select-box {
+    position: relative;
+}
+
+.options-container {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
+    color: rgb(56, 52, 52);
+    display: none;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    z-index: 1;
+}
+
+.option, .selected {
+    padding: 10px 20px;
+}
+
+.select-box .option .radio {
+    display: none;
+}
+
+.selected {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    color: rgb(56, 52, 52);
+    cursor: pointer;
+    position: relative;
+}
+
+.selected:after{
+    color: rgba(0, 0, 0, 0.8);
+    content: '\f106';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 700;
+    position: absolute;
+    right: 20px;
+    transform: rotate(180deg);
+}
+
+.select-box .option:hover,
+.select-box .option label:hover {
+    background: #F1FFF3;;
+    border-radius: 5px;
+    color: #8AD891;
+    cursor: pointer;
+}
+
+.search-box {
+    position: sticky;
+    top: 0;
+}
+
+.search-box input {
+    border: none;
+    font-size: 16px;
+    outline-offset: -10px;
+    padding: 16px 16px;
+    width: 100%;
+}
+
+.search-box input:focus {
+    border-radius: 15px;
+    outline: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.select-box .options-container.active {
+    display: block;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.select-box .options-container::-webkit-scrollbar {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    height: 1px;
+    width: 7px;
+}
+
+.select-box .options-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px 8px 8px 8px;
+}
+
+.filter-collections {
+    display: none;
+}
+
+.filter-collections.active {
+    display: block;
+}
+
 
 @media (max-width: 768px) {
     .collection-learn,

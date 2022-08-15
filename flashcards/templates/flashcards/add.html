@@ -18,7 +18,46 @@
                 </select>
             </div>
         </div>
-
+        <div class="row mb-4">
+            <div class="col-md-6 mb-2">
+                    <div class="select-box mb-3">
+                        <label class="text-muted">Question in</label>
+                        <div class="selected selected-question">
+                            Choose language
+                        </div>
+                        <div class="options-container question-container">
+                            <div class="search-box question-search">
+                                <input type="text" placeholder="Search..." >
+                            </div>
+                            {% for language in languages %}
+                                <div class="option question-language">
+                                  <input type="radio" class="radio" name="language1" id="{{ language }}1">
+                                  <label for="{{ language }}1">{{ language }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                    <div class="select-box mb-3">
+                        <label class="text-muted">Answer by</label>
+                        <div class="selected selected-answer">
+                            Choose language
+                        </div>
+                        <div class="options-container answer-container">
+                            <div class="search-box answer-search">
+                                <input type="text" placeholder="Search..." >
+                            </div>
+                            {% for language in languages %}
+                                <div class="option answer-language">
+                                  <input type="radio" class="radio" name="language2" id="{{ language }}2">
+                                  <label for="{{ language }}2">{{ language }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+            </div>
+        </div>
         <div class="flashcards">
 
         </div>
@@ -32,7 +71,6 @@
         <div class="container p-0 text-end mt-5">
             <button class="btn btn-primary align-self-right mb-5" type="submit">Save</button>
         </div>
-
     </form>
 {% endblock %}
 

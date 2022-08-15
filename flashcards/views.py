@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
+from flashcards import LANGUAGES, MIN_FLASHCARDS
 from .models import Collection, Flashcard, Log
+from .filters import CollectionFilter
 
 
 def explore(request):
@@ -17,12 +19,21 @@ def explore(request):
         collections = Collection.objects.filter(
             public=True).order_by('-id').all()
 
+    collections_filter = CollectionFilter(request.GET, queryset=collections)
+
     # Set pagination
-    paginator = Paginator(collections, 10)
+    paginator = Paginator(collections_filter.qs, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Remove page from query to add filter while switching pages
+    request_without_page = request.GET.copy()
+    if 'page' in request_without_page:
+        del request_without_page['page']
+    request.GET = request_without_page
+
     return render(request, 'flashcards/explore.html', {
+        'filter': collections_filter,
         'collections': page_obj
     })
 
@@ -52,7 +63,7 @@ def library(request):
 @login_required
 def add_collection(request):
     if request.method == 'POST':
-        # Validate input
+        # Load data
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
@@ -60,7 +71,19 @@ def add_collection(request):
                 'error': 'Invalid request'
             }, status=400)
 
-        title = data['title'].rstrip()
+        # Prevent client from sending wrong request data
+        try:
+            title = data['title'].rstrip()
+            visibility = data['visibility']
+            language1 = data['language1']
+            language2 = data['language2']
+            flashcards = data['flashcards']
+        except KeyError:
+            return JsonResponse({
+                'error': 'Invalid data request'
+            }, status=400)
+
+        # Ensure title length is correct
         if not title:
             return JsonResponse({
                 'error': 'Title cannot be empty'
@@ -70,24 +93,36 @@ def add_collection(request):
                 'error': 'Title too long'
             }, status=400)
 
-        visibility = data['visibility']
+        # Validate visibility
         if visibility != 'Public' and visibility != 'Private':
             return JsonResponse({
                 'error': 'Invalid visibility'
             }, status=400)
         public = True if visibility == 'Public' else False
 
-        flashcards = data['flashcards']
-        if len(flashcards) < 2:
+        # Ensure languages are listed
+        if language1 not in LANGUAGES:
             return JsonResponse({
-                'error': 'At least 2 flashcards required'
+                'error': 'Invalid question language'
+            }, status=400)
+        if language2 not in LANGUAGES:
+            return JsonResponse({
+                'error': 'Invalid answer language'
+            }, status=400)
+
+        # Check minimum flashcards per collection
+        if len(flashcards) < MIN_FLASHCARDS:
+            return JsonResponse({
+                'error': f'At least {MIN_FLASHCARDS} flashcards required'
             }, status=400)
 
         # Create new collection
         collection = Collection(
             author=request.user,
             title=title,
-            public=public
+            public=public,
+            language1=language1.lower(),
+            language2=language2.lower()
         )
         collection.save()
 
@@ -110,4 +145,6 @@ def add_collection(request):
             'success': 'Collection added successfully.'
         }, status=201)
 
-    return render(request, 'flashcards/add.html')
+    return render(request, 'flashcards/add.html', {
+        'languages': LANGUAGES
+    })

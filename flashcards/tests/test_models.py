@@ -13,12 +13,21 @@ class CollectionModelTest(TestCase):
         Collection.objects.create(
             title='CollectionTestTitle',
             author=test_user,
+            language1='Polish',
+            language2='English',
         )
 
     def test_title_max_length(self):
         collection = Collection.objects.get(id=1)
         max_length = collection._meta.get_field('title').max_length
         self.assertEqual(max_length, 100)
+
+    def test_languages_max_length(self):
+        collection = Collection.objects.get(id=1)
+        max_length1 = collection._meta.get_field('language1').max_length
+        self.assertEqual(max_length1, 50)
+        max_length2 = collection._meta.get_field('language2').max_length
+        self.assertEqual(max_length2, 50)
 
     def test_default_public_is_false(self):
         collection = Collection.objects.get(id=1)
@@ -48,6 +57,8 @@ class FlashcardModelTest(TestCase):
         collection = Collection.objects.create(
             title='CollectionTestTitle',
             author=test_user,
+            language1='Polish',
+            language2='English',
         )
         Flashcard.objects.create(
             task='FlashcardTestTask',

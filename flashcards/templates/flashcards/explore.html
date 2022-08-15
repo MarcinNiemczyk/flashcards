@@ -1,50 +1,65 @@
-{% extends 'flashcards/base.html' %} 
+{% extends 'flashcards/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
-        {% for collection in collections %}
-            {% if request.user != collection.author %}
-                <div class="content-section w-100 mb-3">
-                    <div class="row">
-                        <div class="col-md-2 border-end">
-                            <div class="d-flex justify-content-center align-items-center h-100">
-                                {% if request.user.is_authenticated %}
-                                    {% if request.user in collection.followers.all %}
-                                        <button class="btn btn-sm btn-dark m-1">Following</button>
-                                    {% else %}
-                                        <button class="btn btn-sm btn-outline-dark m-1">Follow</button>
-                                    {% endif %}
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-5">
+            <button class="btn btn-outline-secondary w-100" id="filter-toggle">Filter</button>
+            <form class="mb-3 mt-4 filter-collections" method="get">
+                {{ filter.form|crispy }}
+                <button class="btn btn-danger mt-3" type="submit">Filter</button>
+            </form>
+        </div>
+    </div>
+
+
+    {% for collection in collections %}
+        {% if request.user != collection.author %}
+            <div class="content-section w-100 mb-3">
+                <div class="row">
+                    <div class="col-md-2 border-end">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            {% if request.user.is_authenticated %}
+                                {% if request.user in collection.followers.all %}
+                                    <button class="btn btn-sm btn-dark m-1">Following</button>
                                 {% else %}
-                                    <a class="btn btn-sm btn-outline-dark m-1" href="{% url 'login' %}">Log In to Follow</a>
+                                    <button class="btn btn-sm btn-outline-dark m-1">Follow</button>
                                 {% endif %}
+                            {% else %}
+                                <a class="btn btn-sm btn-outline-dark m-1" href="{% url 'login' %}">Log In to Follow</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-8 p-3">
+                        <div class="d-flex flex-column justify-content-between h-100 mt-3">
+                            <h3 class="display-5">{{ collection.title }}</h3>
+                            <div>
+                                <a href="" class="collection-author">
+                                    <img class="rounded-circle border" src="{{ collection.author.image.url }}" width="20px" height="20px">
+                                    {{ collection.author.username }}
+                                </a>
                             </div>
                         </div>
-                        <div class="col-md-8 p-3">
-                            <div class="d-flex flex-column justify-content-between h-100 mt-3">
-                                <h3 class="display-5">{{ collection.title }}</h3>
-                                <div>
-                                    <a href="" class="collection-author">
-                                        <img class="rounded-circle border" src="{{ collection.author.image.url }}" width="20px" height="20px">
-                                        {{ collection.author.username }}
-                                    </a>
-                                </div>
+                    </div>
+                    <div class="collection-sidebar col-md-2 border-start">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="mb-2 text-center">
+                                <p>Followers: {{ collection.followers.count }}<p>
+                                <p>Size: {{ collection.flashcards.count }}<p>
+                                <p class="mt-2">[ <strong>{{ collection.language1 }} - {{ collection.language2 }}</strong> ]<p>
                             </div>
-                        </div>
-                        <div class="collection-sidebar col-md-2 border-start">
-                            <div class="d-flex flex-column align-items-center">
-                                <div class="mb-3">
-                                    Followers: 0
-                                </div>
-                                <div class="buttons-container d-grid col-8 mb-2 mt-2">
-                                    <div class="collection-buttons d-flex flex-column justify-content-center">
-                                        <a class="btn btn-outline-primary" href="">Details</a>
-                                    </div>
+                            <div class="buttons-container d-grid col-8 mb-2 mt-2">
+                                <div class="collection-buttons d-flex flex-column justify-content-center">
+                                    <a class="btn btn-outline-primary" href="">Details</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
     {% empty %}
         <div class="collection-empty">
             <h2 class="display-5">There is nothing to explore</h2>
@@ -57,33 +72,37 @@
             <ul class="pagination">
                 {% if collections.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1" aria-disabled="true">&laquo;</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page=1" aria-disabled="true">&laquo;</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.previous_page_number }}">Previous</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.previous_page_number }}">Previous</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.previous_page_number }}">{{ collections.previous_page_number }}</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.previous_page_number }}">{{ collections.previous_page_number }}</a>
                     </li>
                 {% endif %}
 
                 <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="?page={{ collections.number }}">{{ collections.number }}</a>
+                    <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.number }}">{{ collections.number }}</a>
                 </li>
 
                 {% if collections.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.next_page_number }}">{{ collections.next_page_number }}</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.next_page_number }}">{{ collections.next_page_number }}</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.next_page_number }}">Next</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.next_page_number }}">Next</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ collections.paginator.num_pages }}">&raquo;</a>
+                        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ collections.paginator.num_pages }}">&raquo;</a>
                     </li>
                 {% endif %}
             </ul>
         </nav>
     {% endif %}
 
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'flashcards/explore.js' %}"></script>
 {% endblock %}
