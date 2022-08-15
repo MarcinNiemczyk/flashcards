@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from flashcards import LANG_CHOICES
 
 
 class Collection(models.Model):
@@ -14,8 +15,8 @@ class Collection(models.Model):
         related_name='following',
         blank=True
     )
-    language1 = models.CharField(max_length=50)
-    language2 = models.CharField(max_length=50)
+    language1 = models.CharField(max_length=50, choices=LANG_CHOICES)
+    language2 = models.CharField(max_length=50, choices=LANG_CHOICES)
     public = models.BooleanField(default=False)
     randomized = models.BooleanField(default=False)
     reversed = models.BooleanField(default=False)
