@@ -3,6 +3,7 @@ from datetime import datetime
 from django.test import TestCase
 from django.urls import reverse
 from users.models import User
+from flashcards import LANGUAGES
 from flashcards.models import Collection, Log
 
 
@@ -19,16 +20,20 @@ class ExploreViewTest(TestCase):
         )
 
         number_of_collections = 13
-        for collection_id in range(number_of_collections):
+        for i in range(number_of_collections):
             Collection.objects.create(
-                title=f'Testuser1 collection {collection_id + 1}',
+                title=f'Testuser1 collection {i + 1}',
                 author=testuser1,
-                public=True
+                public=True,
+                language1=LANGUAGES[i].lower(),
+                language2=LANGUAGES[i+1].lower()
             )
         Collection.objects.create(
             author=testuser2,
             title='Testuser2 collection',
-            public=True
+            public=True,
+            language1='arabic',
+            language2='albanian'
         )
 
         # Add one non-public collection per user
@@ -70,11 +75,53 @@ class ExploreViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['collections']), 1)
 
-    def test_collections_order_by_reversed_id(self):
+    def test_collections_default_order_by_reversed_id(self):
         response = self.client.get(reverse('explore'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['collections'][0], Collection.objects.get(id=14))
         self.assertEqual(response.context['collections'][1], Collection.objects.get(id=13))
+
+    def test_filter_by_title(self):
+        response = self.client.get(reverse('explore'), {'title': '2'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 3)
+
+    def test_filter_sort(self):
+        response = self.client.get(reverse('explore'), {'sort': 'oldest'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collections'][0], Collection.objects.get(id=1))
+        self.assertEqual(response.context['collections'][1], Collection.objects.get(id=2))
+
+    def test_filter_languages(self):
+        response = self.client.get(reverse('explore'), {'language1': 'albanian'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 3)
+
+    def test_filter_both_languages(self):
+        response = self.client.get(reverse('explore'), {
+            'language1': 'albanian',
+            'language2': 'arabic'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 2)
+
+    def test_filters_all_together(self):
+        response = self.client.get(reverse('explore'), {
+            'title': '1',
+            'sort': 'oldest',
+            'language1': 'albanian',
+            'language2': 'arabic',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 1)
+
+    def test_pagination_with_filters_is_ten(self):
+        response = self.client.get(reverse('explore'), {
+            'title': 'collection',
+            'sort': 'oldest',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 10)
 
 
 class LibraryViewTest(TestCase):
