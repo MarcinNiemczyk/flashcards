@@ -1,8 +1,9 @@
 import json
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
 from .models import Collection, Flashcard, Log
@@ -10,7 +11,6 @@ from .filters import CollectionFilter
 
 
 def explore(request):
-
     # Ensure user's own collections are not displayed
     if request.user.is_authenticated:
         collections = Collection.objects.filter(
@@ -147,4 +147,32 @@ def add_collection(request):
 
     return render(request, 'flashcards/add.html', {
         'languages': LANGUAGES
+    })
+
+
+def collection_details(request, collection_id):
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        raise Http404('Collection not found')
+
+    # Ensure user cannot access others private collections
+    if request.user != collection.author and not collection.public:
+        return HttpResponseForbidden()
+
+    # Update logs for every visit
+    if request.user.is_authenticated:
+        try:
+            log = Log.objects.get(visitor=request.user, collection=collection)
+        except Log.DoesNotExist:
+            Log.objects.create(
+                visitor=request.user,
+                collection=collection
+            )
+        else:
+            log.timestamp = datetime.now()
+            log.save()
+
+    return render(request, 'flashcards/collection.html', {
+        'collection': collection
     })

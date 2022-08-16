@@ -248,3 +248,70 @@ class AddCollectionViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(str(response.context['user']), 'testuser')
         self.assertTemplateUsed(response, 'flashcards/add.html')
+
+
+class CollectionViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        testuser1 = User.objects.create_user(
+            username='testuser1',
+            password='7,a}MXe+oTJL'
+        )
+        testuser2 = User.objects.create_user(
+            username='testuser2',
+            password='NqCJAB}N~@Wg'
+        )
+
+        Collection.objects.create(
+            author=testuser1,
+            title='Testuser1 private collection',
+            language1='english',
+            language2='english'
+        )
+        Collection.objects.create(
+            author=testuser2,
+            title='Testuser2 private collection',
+            language1='english',
+            language2='english'
+        )
+        Collection.objects.create(
+            author=testuser2,
+            title='Testuser2 public collection',
+            public=True,
+            language1='english',
+            language2='english'
+        )
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/collection/3')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collection'].id, 3)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('collection', kwargs={'collection_id': 3}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collection'].id, 3)
+
+    def test_incorrect_collection_url(self):
+        response = self.client.get(reverse('collection', kwargs={'collection_id': 4}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('collection', kwargs={'collection_id': 3}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'flashcards/collection.html')
+
+    def test_private_collections_are_not_accessible(self):
+        response = self.client.get(reverse('collection', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_user_can_access_own_private_collections(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('collection', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collection'].id, 1)
+
+    def test_user_cannot_access_other_user_private_collection(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('collection', kwargs={'collection_id': 2}))
+        self.assertEqual(response.status_code, 403)

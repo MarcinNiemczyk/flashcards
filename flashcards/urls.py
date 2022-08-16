@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.explore, name='explore'),
     path('library', views.library, name='library'),
     path('add', views.add_collection, name='add collection'),
+    path('collection/<int:collection_id>', views.collection_details, name='collection')
 ]
 
 # Serving files uploaded by a user during development

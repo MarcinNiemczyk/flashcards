@@ -183,6 +183,14 @@ body {
     display: block;
 }
 
+.collection-flashcards {
+    display: none;
+}
+
+.collection-flashcards.active {
+    display: block;
+}
+
 
 @media (max-width: 768px) {
     .collection-learn,
@@ -215,5 +223,13 @@ body {
 
     .visibility {
         order: 1;
+    }
+
+    .task-border-right {
+        border: none !important;
+    }
+
+    .task-border-bottom {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 }
