@@ -18,8 +18,6 @@ class Collection(models.Model):
     language1 = models.CharField(max_length=50, choices=LANG_CHOICES)
     language2 = models.CharField(max_length=50, choices=LANG_CHOICES)
     public = models.BooleanField(default=False)
-    randomized = models.BooleanField(default=False)
-    reversed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} ({self.id})"

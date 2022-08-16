@@ -33,14 +33,6 @@ class CollectionModelTest(TestCase):
         collection = Collection.objects.get(id=1)
         self.assertFalse(collection.public)
 
-    def test_default_randomized_is_false(self):
-        collection = Collection.objects.get(id=1)
-        self.assertFalse(collection.randomized)
-
-    def test_default_reversed_is_false(self):
-        collection = Collection.objects.get(id=1)
-        self.assertFalse(collection.reversed)
-
     def test_object_name_is_correct(self):
         collection = Collection.objects.get(id=1)
         expected_object_name = f"{collection.title} ({collection.id})"
