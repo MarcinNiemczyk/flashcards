@@ -1,4 +1,5 @@
 {% extends 'flashcards/base.html' %}
+{% load static %}
 
 {% block content %}
     <div class="container mb-3 p-0 d-flex">
@@ -38,5 +39,30 @@
         </div>
     </div>
 
-    <button class="btn btn-lg btn-light" id="toggle-flashcards">{{ collection.flashcards.count }} Flashcards <i class="fa-solid fa-chevron-down ms-1"></i></button>
+    <button class="btn btn-lg btn-light mb-5" id="toggle-flashcards">{{ collection.flashcards.count }} Flashcards <i class="fa-solid fa-chevron-down ms-1"></i></button>
+
+    <div class="collection-flashcards">
+        {% for flashcard in collection.flashcards.all %}
+            <div class="content-section">
+                <div class="section-header d-flex justify-content-between">
+                    <div class="section-number">{{ forloop.counter }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 d-flex flex-column p-2 task-border-bottom">
+                        <div class="p-2 d-flex justify-content-center align-items-center h5 border-end task-border-right">{{ flashcard.task }}</div>
+                        <label class="text-muted align-self-end me-3">{{ flashcard.collection.language1|title }}</label>
+                    </div>
+                    <div class="col-md-6 d-flex flex-column p-2">
+                        <div class="p-2 d-flex justify-content-center align-items-center h5">{{ flashcard.solution }}</div>
+                        <label class="text-muted align-self-end me-3">{{ flashcard.collection.language2|title }}</label>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'flashcards/collection.js' %}"></script>
 {% endblock %}
