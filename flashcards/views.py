@@ -2,7 +2,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
 from .models import Collection, Flashcard, Log
@@ -147,4 +147,19 @@ def add_collection(request):
 
     return render(request, 'flashcards/add.html', {
         'languages': LANGUAGES
+    })
+
+
+def collection_details(request, collection_id):
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        raise Http404('Collection not found')
+
+    # Ensure user cannot access others private collections
+    if request.user != collection.author and not collection.public:
+        return HttpResponseForbidden()
+
+    return render(request, 'flashcards/collection.html', {
+        'collection': collection
     })
