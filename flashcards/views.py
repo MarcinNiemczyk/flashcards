@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.core.paginator import Paginator
@@ -159,6 +160,19 @@ def collection_details(request, collection_id):
     # Ensure user cannot access others private collections
     if request.user != collection.author and not collection.public:
         return HttpResponseForbidden()
+
+    # Update logs for every visit
+    if request.user.is_authenticated:
+        try:
+            log = Log.objects.get(visitor=request.user, collection=collection)
+        except Log.DoesNotExist:
+            Log.objects.create(
+                visitor=request.user,
+                collection=collection
+            )
+        else:
+            log.timestamp = datetime.now()
+            log.save()
 
     return render(request, 'flashcards/collection.html', {
         'collection': collection
