@@ -11,7 +11,6 @@ from .filters import CollectionFilter
 
 
 def explore(request):
-
     # Ensure user's own collections are not displayed
     if request.user.is_authenticated:
         collections = Collection.objects.filter(
