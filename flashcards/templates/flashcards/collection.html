@@ -1,5 +1,42 @@
 {% extends 'flashcards/base.html' %}
 
 {% block content %}
-    <h1>{{ collection.id }}</h1>
+    <div class="container mb-3 p-0 d-flex">
+        {% if collection.author == request.user %}
+            <div class="col-10">
+                <button class="btn btn-lg btn-outline-dark">Learn</button>
+            </div>
+            <div class="col-2 d-flex justify-content-end align-items-center">
+                <button class="btn btn-sm btn-warning m-1">Edit</button>
+                <button class="btn btn-sm btn-danger m-1">Delete</button>
+            </div>
+        {% else %}
+            {% if request.user in collection.followers.all %}
+                <button class="btn btn-secondary">Following</button>
+            {% else %}
+                <button class="btn btn-outline-secondary">Follow</button>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="row content-section">
+        <div class="col-md-9 mt-2 mb-2">
+            <label class="text-muted">Collection</label>
+            <h2 class="m-2 display-5">{{ collection.title }}</h2>
+        </div>
+        <div class="col-md-3 mt-2 mb-2">
+            <label class="text-muted">Created by</label>
+            <div class="d-flex align-items-center mt-3 mb-3">
+                <a href="" class="collection-author">
+                    <div class="d-flex align-items-center me-3">
+                        <img class="rounded-circle border" src="{{ collection.author.image.url }}" width="50px" height="50px">
+                        <p class="m-0 ms-2 h4">{{ collection.author.username }}</p>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <button class="btn btn-lg btn-light" id="toggle-flashcards">{{ collection.flashcards.count }} Flashcards <i class="fa-solid fa-chevron-down ms-1"></i></button>
 {% endblock %}
