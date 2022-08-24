@@ -8,13 +8,13 @@
         <div class="row mb-5">
             <div class="col-md-10">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" minlength="1" maxlength="100" name="title">
+                <input type="text" class="form-control" id="title" minlength="1" maxlength="100" name="title" value="{{ collection.title }}">
             </div>
             <div class="col-md-2">
                 <label class="mr-sm-2" for="visibility">Visibility</label>
                 <select class="form-select" aria-label="Select visibility" id="visibility" name="visibility">
-                    <option selected>Private</option>
-                    <option>Public</option>
+                    <option {% if not collection.public %}selected{% endif %}>Private</option>
+                    <option {% if collection.public %}selected{% endif %}>Public</option>
                 </select>
             </div>
         </div>
@@ -59,7 +59,24 @@
             </div>
         </div>
         <div class="flashcards">
-
+            {% for flashcard in collection.flashcards.all %}
+                <div class="content-section" id="flashcard{{ flashcard.id }}">
+                    <div class="section-header d-flex justify-content-between mb-3">
+                        <div class="section-number">{{ flashcard.id }}</div>
+                        <div class="section-delete" name="{{ flashcard.id }}" id="delete{{ flashcard.id }}"><i class="fa-solid fa-trash-can"></i></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control task" id="task{{ flashcard.id }}" minlength="1" maxlength="250" required value="{{ flashcard.task }}">
+                            <label class="text-muted" for="task{{ flashcard.id }}">Task</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control solution" id="solution{{ flashcard.id }}" minlength="1" maxlength="250" required value="{{ flashcard.solution }}">
+                            <label class="text-muted" for="solution{{ flashcard.id }}">Solution</label>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
 
         <div class="container p-0 text-center">
@@ -75,5 +92,5 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'flashcards/add.js' %}" type="module"></script>
+    <script src="{% static 'flashcards/edit.js' %}" type="module"></script>
 {% endblock %}

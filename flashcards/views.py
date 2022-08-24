@@ -176,3 +176,19 @@ def collection_details(request, collection_id):
     return render(request, 'flashcards/collection.html', {
         'collection': collection
     })
+
+
+def edit_collection(request, collection_id):
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        raise Http404('Collection not found')
+
+    # Prevent from editing other user collections
+    if request.user != collection.author and not collection.public:
+        return HttpResponseForbidden()
+
+    return render(request, 'flashcards/edit.html', {
+        'collection': collection,
+        'languages': LANGUAGES
+    })
