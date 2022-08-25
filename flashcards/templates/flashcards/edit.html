@@ -23,7 +23,7 @@
                     <div class="select-box mb-3">
                         <label class="text-muted">Question in</label>
                         <div class="selected selected-question">
-                            Choose language
+                            {{ collection.language1|title }}
                         </div>
                         <div class="options-container question-container">
                             <div class="search-box question-search">
@@ -42,7 +42,7 @@
                     <div class="select-box mb-3">
                         <label class="text-muted">Answer by</label>
                         <div class="selected selected-answer">
-                            Choose language
+                            {{ collection.language2|title }}
                         </div>
                         <div class="options-container answer-container">
                             <div class="search-box answer-search">
@@ -60,19 +60,19 @@
         </div>
         <div class="flashcards">
             {% for flashcard in collection.flashcards.all %}
-                <div class="content-section" id="flashcard{{ flashcard.id }}">
+                <div class="content-section" id="flashcard{{ forloop.counter }}">
                     <div class="section-header d-flex justify-content-between mb-3">
-                        <div class="section-number">{{ flashcard.id }}</div>
-                        <div class="section-delete" name="{{ flashcard.id }}" id="delete{{ flashcard.id }}"><i class="fa-solid fa-trash-can"></i></div>
+                        <div class="section-number">{{ forloop.counter }}</div>
+                        <div class="section-delete" name="{{ forloop.counter }}" id="delete{{ forloop.counter }}"><i class="fa-solid fa-trash-can"></i></div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="text" class="form-control task" id="task{{ flashcard.id }}" minlength="1" maxlength="250" required value="{{ flashcard.task }}">
-                            <label class="text-muted" for="task{{ flashcard.id }}">Task</label>
+                            <input type="text" class="form-control task" id="task{{ forloop.counter }}" minlength="1" maxlength="250" required value="{{ flashcard.task }}">
+                            <label class="text-muted" for="task{{ forloop.counter }}">Task</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control solution" id="solution{{ flashcard.id }}" minlength="1" maxlength="250" required value="{{ flashcard.solution }}">
-                            <label class="text-muted" for="solution{{ flashcard.id }}">Solution</label>
+                            <input type="text" class="form-control solution" id="solution{{ forloop.counter }}" minlength="1" maxlength="250" required value="{{ flashcard.solution }}">
+                            <label class="text-muted" for="solution{{ forloop.counter }}">Solution</label>
                         </div>
                     </div>
                 </div>
@@ -92,5 +92,5 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'flashcards/edit.js' %}" type="module"></script>
+    <script src="{% static 'flashcards/collection-form.js' %}" type="module"></script>
 {% endblock %}
