@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from users.models import User
 from flashcards import LANGUAGES
-from flashcards.models import Collection, Log
+from flashcards.models import Collection, Flashcard, Log
 
 
 class ExploreViewTest(TestCase):
@@ -242,12 +242,77 @@ class AddCollectionViewTest(TestCase):
         response = self.client.get(reverse('add collection'))
         self.assertRedirects(response, '/login/?next=/add')
 
-    def test_logged_in_uses_correct_template(self):
+    def test_view_uses_correct_template(self):
         self.client.login(username='testuser', password='7,a}MXe+oTJL')
         response = self.client.get(reverse('add collection'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(str(response.context['user']), 'testuser')
         self.assertTemplateUsed(response, 'flashcards/add.html')
+
+
+class EditCollectionViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        testuser1 = User.objects.create_user(
+            username='testuser1',
+            password='7,a}MXe+oTJL'
+        )
+        testuser2 = User.objects.create_user(
+            username='testuser2',
+            password='NqCJAB}N~@Wg'
+        )
+
+        collection = Collection.objects.create(
+            author=testuser1,
+            title='Testuser1 private collection',
+            language1='english',
+            language2='english'
+        )
+
+        Collection.objects.create(
+            author=testuser2,
+            title='Testuser2 private collection',
+            language1='english',
+            language2='english'
+        )
+        Collection.objects.create(
+            author=testuser2,
+            title='Testuser2 public collection',
+            public=True,
+            language1='english',
+            language2='english'
+        )
+
+    def test_view_url_exists_at_desired_location(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get('/edit/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collection'].id, 1)
+
+    def test_view_url_accessible_by_name(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('edit', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['collection'].id, 1)
+
+    def test_view_url_accessible_only_for_author(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('edit', kwargs={'collection_id': 2}))
+        self.assertEqual(response.status_code, 403)
+        response = self.client.get(reverse('edit', kwargs={'collection_id': 3}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_incorrect_collection_url(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('edit', kwargs={'collection_id': 4}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_view_uses_correct_template(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('edit', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(str(response.context['user']), 'testuser1')
+        self.assertTemplateUsed(response, 'flashcards/edit.html')
 
 
 class CollectionViewTest(TestCase):

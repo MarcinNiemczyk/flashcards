@@ -1,10 +1,26 @@
-const defaultFlashcards = 2
-let flashcardId = defaultFlashcards
+let flashcardCounter = 0;
 
-// Generate starting flashcards
-for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
+if (window.location.pathname === '/add') {
+    // Generate starting flashcards
+    const defaultFlashcards = 2;
+    flashcardCounter = defaultFlashcards;
+
+    for (let flashcard = 1; flashcard <= defaultFlashcards; flashcard++) {
     addFlashcard(flashcard);
+    }
+} else {
+    // Count existing flashcards in edit mode
+    document.querySelectorAll('.content-section').forEach(flashcard => {
+        flashcardCounter++;
+    })
 }
+
+// Add flashcard button
+document.querySelector('.add-flashcard').onclick = () => {
+    flashcardCounter++;
+    addFlashcard(flashcardCounter);
+}
+updateButtons();
 
 const selectedQuestionLanguage = document.querySelector('.selected-question');
 const questionLanguagesContainer = document.querySelector('.question-container');
@@ -90,13 +106,6 @@ const filterAnswerLanguage = searchTerm => {
     });
 }
 
-// Add flashcard button
-document.querySelector('.add-flashcard').onclick = () => {
-    flashcardId++;
-    addFlashcard(flashcardId);
-}
-updateButtons();
-
 // Save collection
 document.querySelector('form').onsubmit = function(event) {
     document.querySelector('.btn-primary').setAttribute('disabled', '');
@@ -116,8 +125,8 @@ document.querySelector('form').onsubmit = function(event) {
         flashcards.push(flashcard);
     });
 
-    fetch('add', {
-        method: 'POST',
+    fetch((window.location.pathname === '/add' ? 'add' : window.location.pathname), {
+        method: (window.location.pathname === '/add' ? 'POST' : 'PUT'),
         headers: {
             'X-CSRFToken': csrftoken
         },

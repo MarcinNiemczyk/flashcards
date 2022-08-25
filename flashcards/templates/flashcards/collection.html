@@ -8,7 +8,7 @@
                 <button class="btn btn-lg btn-outline-dark">Learn</button>
             </div>
             <div class="col-2 d-flex justify-content-end align-items-center">
-                <button class="btn btn-sm btn-warning m-1">Edit</button>
+                <a class="btn btn-sm btn-warning m-1" href="{% url 'edit' collection_id=collection.id %}">Edit</a>
                 <button class="btn btn-sm btn-danger m-1">Delete</button>
             </div>
         {% else %}
