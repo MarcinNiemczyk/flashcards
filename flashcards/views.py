@@ -138,8 +138,8 @@ def edit_collection(request, collection_id):
     except Collection.DoesNotExist:
         raise Http404('Collection not found')
 
-    # Prevent from editing other user collections
-    if request.user != collection.author and not collection.public:
+    # Ensure user is an author
+    if not request.user.is_authenticated or request.user != collection.author:
         return HttpResponseForbidden()
 
     if request.method == 'PUT':
