@@ -125,7 +125,7 @@ document.querySelector('form').onsubmit = function(event) {
         flashcards.push(flashcard);
     });
 
-    fetch((window.location.pathname === '/add' ? 'add' : 'edit'), {
+    fetch((window.location.pathname === '/add' ? 'add' : window.location.pathname), {
         method: (window.location.pathname === '/add' ? 'POST' : 'PUT'),
         headers: {
             'X-CSRFToken': csrftoken

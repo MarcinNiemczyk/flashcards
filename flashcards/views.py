@@ -188,6 +188,90 @@ def edit_collection(request, collection_id):
     if request.user != collection.author and not collection.public:
         return HttpResponseForbidden()
 
+    if request.method == 'PUT':
+        # Load data
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'error': 'Invalid request'
+            }, status=400)
+        print(data)
+
+        # Prevent client from sending wrong request data
+        try:
+            title = data['title'].rstrip()
+            visibility = data['visibility']
+            language1 = data['language1']
+            language2 = data['language2']
+            flashcards = data['flashcards']
+        except KeyError:
+            return JsonResponse({
+                'error': 'Invalid data request'
+            }, status=400)
+
+        # Ensure title length is correct
+        if not title:
+            return JsonResponse({
+                'error': 'Title cannot be empty'
+            }, status=400)
+        elif len(title) > 100:
+            return JsonResponse({
+                'error': 'Title too long'
+            }, status=400)
+
+        # Validate visibility
+        if visibility != 'Public' and visibility != 'Private':
+            return JsonResponse({
+                'error': 'Invalid visibility'
+            }, status=400)
+        public = True if visibility == 'Public' else False
+
+        # Ensure languages are listed
+        if language1 not in LANGUAGES:
+            return JsonResponse({
+                'error': 'Invalid question language'
+            }, status=400)
+        if language2 not in LANGUAGES:
+            return JsonResponse({
+                'error': 'Invalid answer language'
+            }, status=400)
+
+        # Check minimum flashcards per collection
+        if len(flashcards) < MIN_FLASHCARDS:
+            return JsonResponse({
+                'error': f'At least {MIN_FLASHCARDS} flashcards required'
+            }, status=400)
+
+        collection = Collection.objects.get(id=collection_id)
+        # Update collection
+        collection.title = title
+        collection.visibility = public
+        collection.language1 = language1
+        collection.language2 = language2
+        collection.save()
+
+        # Replace flashcards
+        collection.flashcards.all().delete()
+        for flashcard in flashcards:
+            task = flashcard['task']
+            solution = flashcard['solution']
+            f = Flashcard(
+                task=task,
+                solution=solution,
+                collection=collection
+            )
+            f.save()
+
+        # Update logs
+        log = Log.objects.get(visitor=request.user, collection=collection)
+        log.timestamp = datetime.now()
+        log.save()
+
+        return JsonResponse({
+            'success': 'Collection updated successfully'
+        }, status=201)
+
     return render(request, 'flashcards/edit.html', {
         'collection': collection,
         'languages': LANGUAGES
