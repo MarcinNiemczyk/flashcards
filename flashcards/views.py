@@ -205,7 +205,7 @@ def load_collection_form(request):
     return collection_data
 
 
-def collection_details(request, collection_id):
+def collection(request, collection_id):
     try:
         collection = Collection.objects.get(id=collection_id)
     except Collection.DoesNotExist:
@@ -214,6 +214,18 @@ def collection_details(request, collection_id):
     # Ensure user cannot access other private collections
     if request.user != collection.author and not collection.public:
         return HttpResponseForbidden()
+
+    if request.method == 'DELETE':
+        # Ensure user is an author
+        if not request.user.is_authenticated or request.user != collection.author:
+            return JsonResponse({
+                'error': 'Permission denied'
+            }, status=403)
+
+        collection.delete()
+        return JsonResponse({
+            'success': 'Collection successfully deleted'
+        }, status=200)
 
     # Update logs for every visit
     if request.user.is_authenticated:
