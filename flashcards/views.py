@@ -21,12 +21,11 @@ def explore(request):
 
     collections_filter = CollectionFilter(request.GET, queryset=collections)
 
-    # Set pagination
     paginator = Paginator(collections_filter.qs, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Remove page from query to add filter while switching pages
+    # Remove page from query to apply current filter while switching pages
     request_without_page = request.GET.copy()
     if 'page' in request_without_page:
         del request_without_page['page']
@@ -47,44 +46,15 @@ def library(request):
         | Q(collection__followers=request.user)
     ).order_by('-timestamp')
 
-    # Grab collections from sorted by log date items
+    # Assign sorted collections
     collections = [item.collection for item in items]
 
-    # Set pagination
     paginator = Paginator(collections, 10)
     page_number = request.GET.get('page')
-    page_library = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'flashcards/library.html', {
-        'collections': page_library
-    })
-
-
-def collection_details(request, collection_id):
-    try:
-        collection = Collection.objects.get(id=collection_id)
-    except Collection.DoesNotExist:
-        raise Http404('Collection not found')
-
-    # Ensure user cannot access others private collections
-    if request.user != collection.author and not collection.public:
-        return HttpResponseForbidden()
-
-    # Update logs for every visit
-    if request.user.is_authenticated:
-        try:
-            log = Log.objects.get(visitor=request.user, collection=collection)
-        except Log.DoesNotExist:
-            Log.objects.create(
-                visitor=request.user,
-                collection=collection
-            )
-        else:
-            log.timestamp = datetime.now()
-            log.save()
-
-    return render(request, 'flashcards/collection.html', {
-        'collection': collection
+        'collections': page_obj
     })
 
 
@@ -118,7 +88,7 @@ def add_collection(request):
             )
             f.save()
 
-        # Update latest visit as creation time
+        # Create new visit log as creation time
         visit = Log(visitor=request.user, collection=collection)
         visit.save()
 
@@ -188,7 +158,6 @@ def edit_collection(request, collection_id):
 
 
 def load_collection_form(request):
-    # Load data
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
@@ -234,3 +203,31 @@ def load_collection_form(request):
         'flashcards': flashcards
     }
     return collection_data
+
+
+def collection_details(request, collection_id):
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        raise Http404('Collection not found')
+
+    # Ensure user cannot access other private collections
+    if request.user != collection.author and not collection.public:
+        return HttpResponseForbidden()
+
+    # Update logs for every visit
+    if request.user.is_authenticated:
+        try:
+            log = Log.objects.get(visitor=request.user, collection=collection)
+        except Log.DoesNotExist:
+            Log.objects.create(
+                visitor=request.user,
+                collection=collection
+            )
+        else:
+            log.timestamp = datetime.now()
+            log.save()
+
+    return render(request, 'flashcards/collection.html', {
+        'collection': collection
+    })
