@@ -8,6 +8,7 @@ from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
 from .models import Collection, Flashcard, Log
 from .filters import CollectionFilter
+from users.models import User
 
 
 def explore(request):
@@ -242,4 +243,15 @@ def collection(request, collection_id):
 
     return render(request, 'flashcards/collection.html', {
         'collection': collection
+    })
+
+
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404('User not found')
+
+    return render(request, 'flashcards/profile.html', {
+        'profile': user
     })
