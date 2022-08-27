@@ -48,7 +48,7 @@
                             <div class="mb-2 text-center">
                                 <p>Followers: {{ collection.followers.count }}<p>
                                 <p>Size: {{ collection.flashcards.count }}<p>
-                                <p class="mt-2">[ <strong>{{ collection.language1 }} - {{ collection.language2 }}</strong> ]<p>
+                                <p class="mt-2">[ <strong>{{ collection.language1|title }} - {{ collection.language2|title }}</strong> ]<p>
                             </div>
                             <div class="buttons-container d-grid col-8 mb-2 mt-2">
                                 <div class="collection-buttons d-flex flex-column justify-content-center">

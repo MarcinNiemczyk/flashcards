@@ -191,6 +191,18 @@ body {
     display: block;
 }
 
+.image-profile {
+    height: 128px;
+    width: 128px;
+}
+
+@media (max-width: 1200px) {
+    .image-profile {
+        height: 90px;
+        width: 90px;
+    }
+}
+
 
 @media (max-width: 768px) {
     .collection-learn,
@@ -231,5 +243,10 @@ body {
 
     .task-border-bottom {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .image-profile {
+        height: 64px;
+        width: 64px;
     }
 }

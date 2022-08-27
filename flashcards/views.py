@@ -252,6 +252,18 @@ def profile(request, username):
     except User.DoesNotExist:
         raise Http404('User not found')
 
+    # Load collections
+    if request.user == user:
+        collections = Collection.objects.filter(
+            author=user
+        ).order_by('-id').all()
+    else:
+        collections = Collection.objects.filter(
+            author=user,
+            public=True
+        ).order_by('-id').all()
+
     return render(request, 'flashcards/profile.html', {
-        'profile': user
+        'profile': user,
+        'collections': collections
     })
