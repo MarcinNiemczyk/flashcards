@@ -230,6 +230,21 @@ def collection(request, collection_id):
             'success': 'Collection successfully deleted'
         }, status=200)
 
+    if request.method == 'PATCH':
+        # Ensure user cannot follow his own collections
+        if collection.author == request.user:
+            return JsonResponse({
+                'error': 'You cant follow own collections'
+            }, status=400)
+
+        if request.user in collection.followers.all():
+            collection.followers.remove(request.user)
+        else:
+            collection.followers.add(request.user)
+        return JsonResponse({
+            'success': 'Successfully updated followers list'
+        }, status=200)
+
     # Update logs for every visit
     if request.user.is_authenticated:
         try:
