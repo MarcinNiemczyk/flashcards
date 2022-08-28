@@ -29,7 +29,7 @@
         <div class="col-md-3 mt-2 mb-2">
             <label class="text-muted">Created by</label>
             <div class="d-flex align-items-center mt-3 mb-3">
-                <a href="" class="collection-author">
+                <a href="{% url 'profile' username=collection.author.username %}" class="collection-author">
                     <div class="d-flex align-items-center me-3">
                         <img class="rounded-circle border" src="{{ collection.author.image.url }}" width="50px" height="50px">
                         <p class="m-0 ms-2 h4">{{ collection.author.username }}</p>
