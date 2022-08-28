@@ -105,6 +105,40 @@
         </div>
     {% endfor %}
 
+    {% if collections.has_previous or collections.has_next %}
+        <nav class="d-flex justify-content-center">
+            <ul class="pagination">
+                {% if collections.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-disabled="true">&laquo;</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ collections.previous_page_number }}">Previous</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ collections.previous_page_number }}">{{ collections.previous_page_number }}</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{ collections.number }}">{{ collections.number }}</a>
+                </li>
+
+                {% if collections.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ collections.next_page_number }}">{{ collections.next_page_number }}</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ collections.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ collections.paginator.num_pages }}">&raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
 {% endblock %}
 
 {% if request.user == profile %}
