@@ -6,9 +6,9 @@ from PIL import Image
 class User(AbstractUser):
     image = models.ImageField(default='default.jpg', upload_to='user_images')
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """Overwrite save method to resize every profile image"""
-        super().save()
+        super().save(*args, **kwargs)
 
         img = Image.open(self.image.path)
 
