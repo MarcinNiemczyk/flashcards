@@ -12,10 +12,11 @@
                 <button class="btn btn-sm btn-danger m-1" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
             </div>
         {% else %}
+            <p class="m-2">Followers:<span class="m-2" id="followers{{ collection.id }}">{{ collection.followers.count }}</span></p>
             {% if request.user in collection.followers.all %}
-                <button class="btn btn-secondary">Following</button>
+                <button class="btn btn-dark followButton" name="{{ collection.id }}">Following</button>
             {% else %}
-                <button class="btn btn-outline-secondary">Follow</button>
+                <button class="btn btn-outline-dark followButton" name="{{ collection.id }}">Follow</button>
             {% endif %}
         {% endif %}
     </div>
@@ -82,5 +83,8 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'flashcards/collection.js' %}"></script>
+    <script src="{% static 'flashcards/collection.js' %}" type="module"></script>
+    {% if request.user != collection.author %}
+        <script src="{% static 'flashcards/follow.js' %}" type="module"></script>
+    {% endif %}
 {% endblock %}
