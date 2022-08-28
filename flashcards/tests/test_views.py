@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from users.models import User
 from flashcards import LANGUAGES
-from flashcards.models import Collection, Flashcard, Log
+from flashcards.models import Collection, Log
 
 
 class ExploreViewTest(TestCase):
@@ -140,7 +140,9 @@ class LibraryViewTest(TestCase):
         for collection_id in range(number_of_collections):
             collection = Collection.objects.create(
                 title=f'Testuser1 collection {collection_id + 1}',
-                author=testuser1
+                author=testuser1,
+                language1='english',
+                language2='english'
             )
             Log.objects.create(
                 visitor=testuser1,
@@ -262,7 +264,7 @@ class EditCollectionViewTest(TestCase):
             password='NqCJAB}N~@Wg'
         )
 
-        collection = Collection.objects.create(
+        Collection.objects.create(
             author=testuser1,
             title='Testuser1 private collection',
             language1='english',
@@ -380,3 +382,67 @@ class CollectionViewTest(TestCase):
         self.client.login(username='testuser1', password='7,a}MXe+oTJL')
         response = self.client.get(reverse('collection', kwargs={'collection_id': 2}))
         self.assertEqual(response.status_code, 403)
+
+
+class ProfileViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        testuser1 = User.objects.create_user(
+            username='testuser1',
+            password='7,a}MXe+oTJL'
+        )
+        testuser2 = User.objects.create_user(
+            username='testuser2',
+            password='NqCJAB}N~@Wg'
+        )
+
+        number_of_collections = 13
+        for collection_id in range(number_of_collections):
+            Collection.objects.create(
+                title=f'Collection {collection_id + 1}',
+                author=testuser1,
+                language1='english',
+                language2='english'
+            )
+        Collection.objects.create(
+            author=testuser1,
+            title='Testuser1 public collection',
+            public=True,
+            language1='english',
+            language2='english'
+        )
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/profile/testuser1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'flashcards/profile.html')
+
+    def test_view_shows_only_public_collections(self):
+        response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 1)
+        # Test view for logged user
+        self.client.login(username='testuser2', password='NqCJAB}N~@Wg')
+        response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 1)
+
+    def test_view_pagination_is_ten(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 10)
+
+    def test_view_lists_all_collections(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}) + '?page=2')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['collections']), 4)
