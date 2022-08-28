@@ -191,13 +191,42 @@ body {
     display: block;
 }
 
-.image-profile {
+.profile-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-image img {
     height: 128px;
     width: 128px;
 }
 
+.profile-image input {
+    display: none;
+}
+
+.profile-image label {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: none;
+    font-size: 20px;
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    top: 0;
+    width: 100%;
+    position: absolute;
+}
+
+.profile-image:hover label {
+    display: flex;
+}
+
 @media (max-width: 1200px) {
-    .image-profile {
+    .profile-image img {
         height: 90px;
         width: 90px;
     }
@@ -245,7 +274,7 @@ body {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .image-profile {
+    .profile-image img {
         height: 64px;
         width: 64px;
     }

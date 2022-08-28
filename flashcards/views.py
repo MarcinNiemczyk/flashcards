@@ -1,11 +1,13 @@
+import os
 import json
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
+from foreigner.settings import MEDIA_ROOT
 from .models import Collection, Flashcard, Log
 from .filters import CollectionFilter
 from users.models import User
@@ -251,6 +253,26 @@ def profile(request, username):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         raise Http404('User not found')
+
+    if request.method == 'POST':
+        if request.author != user:
+            return redirect('profile', username)
+
+        image = request.FILES['image']
+        if image.content_type != 'image/jpeg' and image.content_type != 'image/png':
+            return redirect('profile', username)
+
+        # FIXME: Validate file - content_type checks only header
+
+        # Remove previously stored image
+        if user.image.path != (MEDIA_ROOT + '\default.jpg'):
+            old_img = user.image.path
+            os.remove(old_img)
+
+        # Save new image
+        user.image = request.FILES['image']
+        user.save()
+        return redirect('profile', username)
 
     # Load collections
     if request.user == user:
