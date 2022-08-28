@@ -255,14 +255,12 @@ def profile(request, username):
         raise Http404('User not found')
 
     if request.method == 'POST':
-        if request.author != user:
+        if request.user != user:
             return redirect('profile', username)
 
         image = request.FILES['image']
         if image.content_type != 'image/jpeg' and image.content_type != 'image/png':
             return redirect('profile', username)
-
-        # FIXME: Validate file - content_type checks only header
 
         # Remove previously stored image
         if user.image.path != (MEDIA_ROOT + '\default.jpg'):
