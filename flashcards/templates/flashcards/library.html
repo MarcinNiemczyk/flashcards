@@ -41,8 +41,6 @@
                             <div class="collection-buttons d-flex flex-column justify-content-center">
                                 {% if collection.author == request.user %}
                                     <a class="btn btn-sm btn-outline-warning m-1" href="{% url 'edit' collection_id=collection.id %}">Edit</a>
-                                {% else %}
-                                    <button class="btn btn-sm btn-outline-danger m-1">Remove</button>
                                 {% endif %}
                                 <a class="btn btn-sm btn-outline-primary m-1" href="{% url 'collection' collection_id=collection.id %}">Details</a>
                             </div>
