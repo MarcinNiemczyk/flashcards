@@ -1,13 +1,16 @@
+import os
 import json
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
+from foreigner.settings import MEDIA_ROOT
 from .models import Collection, Flashcard, Log
 from .filters import CollectionFilter
+from users.models import User
 
 
 def explore(request):
@@ -227,6 +230,21 @@ def collection(request, collection_id):
             'success': 'Collection successfully deleted'
         }, status=200)
 
+    if request.method == 'PATCH':
+        # Ensure user cannot follow his own collections
+        if collection.author == request.user:
+            return JsonResponse({
+                'error': 'You cant follow own collections'
+            }, status=400)
+
+        if request.user in collection.followers.all():
+            collection.followers.remove(request.user)
+        else:
+            collection.followers.add(request.user)
+        return JsonResponse({
+            'success': 'Successfully updated followers list'
+        }, status=200)
+
     # Update logs for every visit
     if request.user.is_authenticated:
         try:
@@ -242,4 +260,49 @@ def collection(request, collection_id):
 
     return render(request, 'flashcards/collection.html', {
         'collection': collection
+    })
+
+
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404('User not found')
+
+    if request.method == 'POST':
+        if request.user != user:
+            return redirect('profile', username)
+
+        image = request.FILES['image']
+        if image.content_type != 'image/jpeg' and image.content_type != 'image/png':
+            return redirect('profile', username)
+
+        # Remove previously stored image
+        if user.image.path != (MEDIA_ROOT + '\default.jpg'):
+            old_img = user.image.path
+            os.remove(old_img)
+
+        # Save new image
+        user.image = request.FILES['image']
+        user.save()
+        return redirect('profile', username)
+
+    # Load collections
+    if request.user == user:
+        collections = Collection.objects.filter(
+            author=user
+        ).order_by('-id').all()
+    else:
+        collections = Collection.objects.filter(
+            author=user,
+            public=True
+        ).order_by('-id').all()
+
+    paginator = Paginator(collections, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'flashcards/profile.html', {
+        'profile': user,
+        'collections': page_obj
     })

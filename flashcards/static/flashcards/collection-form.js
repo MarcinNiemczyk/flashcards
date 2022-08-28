@@ -1,3 +1,5 @@
+import { createAlert } from "./utils.js";
+
 let flashcardCounter = 0;
 
 if (window.location.pathname === '/add') {
@@ -196,12 +198,4 @@ function updateButtons() {
             deleteFlashcard(button.getAttribute('name'));
         }
     });
-}
-
-function createAlert(category, message) {
-    const alert = document.createElement('div');
-    alert.classList.add('alert', `alert-${category}`, 'mb-5');
-    alert.setAttribute('role', 'alert');
-    alert.innerHTML = message;
-    document.querySelector('main').prepend(alert);
 }

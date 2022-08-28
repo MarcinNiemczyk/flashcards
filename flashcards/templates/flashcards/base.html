@@ -45,7 +45,7 @@
                       <img class="nav-avatar rounded-circle border" src="{{ user.image.url }}">
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Profile</a></li>
+                      <li><a class="dropdown-item" href="{% url 'profile' username=user.username %}">Profile</a></li>
                       <hr class="dropdown-divider">
                       <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
