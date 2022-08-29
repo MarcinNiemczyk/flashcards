@@ -278,7 +278,7 @@ def profile(request, username):
             return redirect('profile', username)
 
         # Remove previously stored image
-        if user.image.path != (MEDIA_ROOT + '\default.jpg'):
+        if user.image.path != (MEDIA_ROOT + '\\default.jpg'):
             old_img = user.image.path
             os.remove(old_img)
 
