@@ -308,6 +308,7 @@ def profile(request, username):
     })
 
 
+@login_required
 def learn(request, collection_id):
     try:
         collection = Collection.objects.get(id=collection_id)
@@ -317,6 +318,11 @@ def learn(request, collection_id):
     # Ensure user cannot access other private collections
     if request.user != collection.author and not collection.public:
         return HttpResponseForbidden()
+
+    # Update logs
+    log = Log.objects.get(visitor=request.user, collection=collection)
+    log.timestamp = datetime.now()
+    log.save()
 
     return render(request, 'flashcards/learn.html', {
         'collection': collection
