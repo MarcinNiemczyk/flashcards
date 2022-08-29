@@ -1,0 +1,27 @@
+{% extends 'flashcards/base.html' %}
+
+{% block content %}
+
+    <div class="d-flex flex-column justify-content-center align-items-start">
+        <a href="{% url 'collection' collection_id=collection.id %}" class="btn btn-dark rounded-circle"><i class="fa-solid fa-arrow-left"></i></a>
+        <h2 class="align-self-center h1">{{ collection.title }}</h2>
+    </div>
+
+    <div class="game-container">
+        <button class="btn rounded-circle settings"><i class="fa-solid fa-gear"></i></button>
+
+        <div class="game-flashcard">
+            <div class="flashcard-counter">1 / 21</div>
+            <div class="display-5 task">Task</div>
+            <div class="display-5 solution">Solution</div>
+        </div>
+
+        <div class="d-flex justify-content-around game-buttons">
+            <button class="btn btn-lg btn-outline-dark">Previous</button>
+            <button class="btn btn-lg btn-outline-dark">Next</button>
+        </div>
+    </div>
+
+
+
+{% endblock %}

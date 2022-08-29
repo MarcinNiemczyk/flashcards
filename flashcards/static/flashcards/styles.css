@@ -225,6 +225,52 @@ body {
     display: flex;
 }
 
+.game-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.game-flashcard {
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: flex;
+    height: 50vh;
+    justify-content: center;
+    margin: 10px 0;
+    position: relative;
+    width: 80%;
+}
+
+.game-buttons {
+    width: 80%;
+}
+
+.game-buttons button {
+    width: 100%;
+    margin: 5px;
+}
+
+.solution {
+    display: none;
+}
+
+.flashcard-counter {
+    left: 10px;
+    position: absolute;
+    color: gray;
+    top: 10px;
+}
+
+.settings {
+    align-self: flex-end;
+    margin-right: 10%;
+}
+
+
 @media (max-width: 1200px) {
     .profile-image img {
         height: 90px;
@@ -277,5 +323,14 @@ body {
     .profile-image img {
         height: 64px;
         width: 64px;
+    }
+
+    .game-flashcard,
+    .game-buttons {
+        width: 100%;
+    }
+
+    .settings {
+        margin: 0;
     }
 }

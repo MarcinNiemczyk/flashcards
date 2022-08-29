@@ -5,7 +5,7 @@
     <div class="container mb-3 p-0 d-flex">
         {% if collection.author == request.user %}
             <div class="col-10">
-                <button class="btn btn-lg btn-outline-dark">Learn</button>
+                <a class="btn btn-lg btn-outline-dark" href="{% url 'learn' collection_id=collection.id %}">Learn</a>
             </div>
             <div class="col-2 d-flex justify-content-end align-items-center">
                 <a class="btn btn-sm btn-warning m-1" href="{% url 'edit' collection_id=collection.id %}">Edit</a>

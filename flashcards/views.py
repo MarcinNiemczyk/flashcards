@@ -306,3 +306,18 @@ def profile(request, username):
         'profile': user,
         'collections': page_obj
     })
+
+
+def learn(request, collection_id):
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        raise Http404('Collection not found')
+
+    # Ensure user cannot access other private collections
+    if request.user != collection.author and not collection.public:
+        return HttpResponseForbidden()
+
+    return render(request, 'flashcards/learn.html', {
+        'collection': collection
+    })
