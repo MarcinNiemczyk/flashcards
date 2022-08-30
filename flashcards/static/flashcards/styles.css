@@ -282,6 +282,7 @@ body {
 
 .game-flashcard {
     cursor: pointer;
+    user-select: none;
 }
 
 .game-flashcard.flipped .task {
