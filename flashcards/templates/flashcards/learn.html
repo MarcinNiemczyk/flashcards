@@ -1,4 +1,5 @@
 {% extends 'flashcards/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -10,18 +11,25 @@
     <div class="game-container">
         <button class="btn rounded-circle settings"><i class="fa-solid fa-gear"></i></button>
 
-        <div class="game-flashcard">
-            <div class="flashcard-counter">1 / 21</div>
-            <div class="display-5 task">Task</div>
-            <div class="display-5 solution">Solution</div>
+        <div class="game-flashcards">
+            {% for flashcard in collection.flashcards.all %}
+                <div class="game-flashcard">
+                    <div class="flashcard-counter">{{ forloop.counter }} / {{ collection.flashcards.count }}</div>
+                    <div class="display-5 task">{{ flashcard.task }}</div>
+                    <div class="display-5 solution">{{ flashcard.solution }}</div>
+                </div>
+            {% endfor %}
         </div>
 
+
         <div class="d-flex justify-content-around game-buttons">
-            <button class="btn btn-lg btn-outline-dark">Previous</button>
-            <button class="btn btn-lg btn-outline-dark">Next</button>
+            <button class="btn btn-lg btn-outline-dark" id="prevButton">Previous</button>
+            <button class="btn btn-lg btn-outline-dark" id="nextButton">Next</button>
         </div>
     </div>
 
+{% endblock %}
 
-
+{% block script %}
+    <script src="{% static 'flashcards/learn.js' %}"></script>
 {% endblock %}
