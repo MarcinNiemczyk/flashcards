@@ -264,7 +264,7 @@ body {
     margin: 5px;
 }
 
-.solution {
+.game-solution {
     display: none;
 }
 
@@ -285,11 +285,11 @@ body {
     user-select: none;
 }
 
-.game-flashcard.flipped .task {
+.game-flashcard.flipped .game-task {
     display: none;
 }
 
-.game-flashcard.flipped .solution {
+.game-flashcard.flipped .game-solution {
     display: block;
 }
 

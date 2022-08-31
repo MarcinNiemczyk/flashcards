@@ -15,8 +15,8 @@
             {% for flashcard in collection.flashcards.all %}
                 <div class="game-flashcard">
                     <div class="flashcard-counter">{{ forloop.counter }} / {{ collection.flashcards.count }}</div>
-                    <div class="display-5 task">{{ flashcard.task }}</div>
-                    <div class="display-5 solution">{{ flashcard.solution }}</div>
+                    <div class="display-5 game-task">{{ flashcard.task }}</div>
+                    <div class="display-5 game-solution">{{ flashcard.solution }}</div>
                 </div>
             {% endfor %}
         </div>
