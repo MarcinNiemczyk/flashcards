@@ -6,7 +6,7 @@ flashcards[currentFlashcardIndex].classList.add('active');
 flashcards.forEach((flashcard) => {
    flashcard.addEventListener('click', () => {
       if (flashcard.style.transform === 'rotateX(180deg)') {
-         flashcard.style.transform = 'rotateX(0deg)';
+         flashcard.style.transform = null;
       } else {
          flashcard.style.transform = 'rotateX(180deg)';
       }
@@ -15,6 +15,7 @@ flashcards.forEach((flashcard) => {
 
 document.getElementById('prevButton').onclick = () => {
    if (currentFlashcardIndex > 0) {
+      flashcards[currentFlashcardIndex].style.transform = null;
       flashcards[currentFlashcardIndex].classList.remove('active');
       currentFlashcardIndex--;
       flashcards[currentFlashcardIndex].classList.add('active');
@@ -23,6 +24,7 @@ document.getElementById('prevButton').onclick = () => {
 
 document.getElementById('nextButton').onclick = () => {
    if (currentFlashcardIndex < flashcards.length - 1) {
+      flashcards[currentFlashcardIndex].style.transform = null;
       flashcards[currentFlashcardIndex].classList.remove('active');
       currentFlashcardIndex++;
       flashcards[currentFlashcardIndex].classList.add('active');
