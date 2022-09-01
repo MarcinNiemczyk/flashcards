@@ -1,6 +1,7 @@
 const flashcards = document.querySelectorAll('.game-flashcard');
 
-let currentFlashcardIndex = loadFlashcard();
+let currentFlashcardIndex = loadIndex();
+loadFlashcard(currentFlashcardIndex);
 
 
 flashcards.forEach((flashcard) => {
@@ -15,21 +16,18 @@ flashcards.forEach((flashcard) => {
 
 document.getElementById('prevButton').onclick = () => {
    if (currentFlashcardIndex > 0) {
-      flashcards[currentFlashcardIndex].style.transform = null;
-      flashcards[currentFlashcardIndex].classList.remove('active');
       currentFlashcardIndex--;
-      flashcards[currentFlashcardIndex].classList.add('active');
+      loadFlashcard(currentFlashcardIndex);
       localStorage.setItem('index', currentFlashcardIndex);
    }
 }
 
 document.getElementById('nextButton').onclick = () => {
    if (currentFlashcardIndex < flashcards.length - 1) {
-      flashcards[currentFlashcardIndex].style.transform = null;
-      flashcards[currentFlashcardIndex].classList.remove('active');
       currentFlashcardIndex++;
-      flashcards[currentFlashcardIndex].classList.add('active');
-      // Let the user start from beginning after learning from all flashcards
+      loadFlashcard(currentFlashcardIndex);
+
+      // Let the user start from scratch after learning from all flashcards
       if (currentFlashcardIndex === flashcards.length - 1) {
          localStorage.setItem('index', '0');
       } else {
@@ -38,11 +36,11 @@ document.getElementById('nextButton').onclick = () => {
    }
 }
 
-
-function loadFlashcard() {
+function loadIndex() {
    let index;
    if (localStorage.hasOwnProperty('index')) {
       index = parseInt(localStorage.getItem('index'));
+      // Ensure index is correct
       try {
          flashcards[index].classList.contains('active');
       } catch(err) {
@@ -53,7 +51,17 @@ function loadFlashcard() {
       localStorage.setItem('index', '0');
       index = 0;
    }
-   flashcards[index].classList.add('active');
-
    return index;
+}
+
+function loadFlashcard(index) {
+   resetFlashcards();
+   flashcards[index].classList.add('active');
+}
+
+function resetFlashcards() {
+   flashcards.forEach(flashcard => {
+      flashcard.style.transform = null;
+      flashcard.classList.remove('active');
+   });
 }
