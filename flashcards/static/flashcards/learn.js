@@ -36,6 +36,12 @@ document.getElementById('nextButton').onclick = () => {
    }
 }
 
+document.getElementById('resetProgress').onclick = () => {
+   localStorage.setItem('index', '0');
+   currentFlashcardIndex = 0;
+   loadFlashcard(0);
+}
+
 function loadIndex() {
    let index;
    if (localStorage.hasOwnProperty('index')) {
