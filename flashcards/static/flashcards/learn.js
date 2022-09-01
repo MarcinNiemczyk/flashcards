@@ -1,7 +1,7 @@
-let currentFlashcardIndex = 0;
-
 const flashcards = document.querySelectorAll('.game-flashcard');
-flashcards[currentFlashcardIndex].classList.add('active');
+
+let currentFlashcardIndex = loadFlashcard();
+
 
 flashcards.forEach((flashcard) => {
    flashcard.addEventListener('click', () => {
@@ -19,6 +19,7 @@ document.getElementById('prevButton').onclick = () => {
       flashcards[currentFlashcardIndex].classList.remove('active');
       currentFlashcardIndex--;
       flashcards[currentFlashcardIndex].classList.add('active');
+      localStorage.setItem('index', currentFlashcardIndex);
    }
 }
 
@@ -28,5 +29,31 @@ document.getElementById('nextButton').onclick = () => {
       flashcards[currentFlashcardIndex].classList.remove('active');
       currentFlashcardIndex++;
       flashcards[currentFlashcardIndex].classList.add('active');
+      // Let the user start from beginning after learning from all flashcards
+      if (currentFlashcardIndex === flashcards.length - 1) {
+         localStorage.setItem('index', '0');
+      } else {
+         localStorage.setItem('index', currentFlashcardIndex);
+      }
    }
+}
+
+
+function loadFlashcard() {
+   let index;
+   if (localStorage.hasOwnProperty('index')) {
+      index = parseInt(localStorage.getItem('index'));
+      try {
+         flashcards[index].classList.contains('active');
+      } catch(err) {
+         localStorage.removeItem('index');
+         return loadFlashcard(flashcards);
+      }
+   } else {
+      localStorage.setItem('index', '0');
+      index = 0;
+   }
+   flashcards[index].classList.add('active');
+
+   return index;
 }
