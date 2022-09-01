@@ -14,13 +14,17 @@
         <div class="game-flashcards">
             {% for flashcard in collection.flashcards.all %}
                 <div class="game-flashcard">
-                    <div class="flashcard-counter">{{ forloop.counter }} / {{ collection.flashcards.count }}</div>
-                    <div class="display-5 game-task">{{ flashcard.task }}</div>
-                    <div class="display-5 game-solution">{{ flashcard.solution }}</div>
+                    <div class="display-5 game-task">
+                        <div class="flashcard-counter">{{ forloop.counter }} / {{ collection.flashcards.count }}</div>
+                        {{ flashcard.task }}
+                    </div>
+                    <div class="display-5 game-solution">
+                        <div class="flashcard-counter">{{ forloop.counter }} / {{ collection.flashcards.count }}</div>
+                        {{ flashcard.solution }}
+                    </div>
                 </div>
             {% endfor %}
         </div>
-
 
         <div class="d-flex justify-content-around game-buttons">
             <button class="btn btn-lg btn-outline-dark" id="prevButton">Previous</button>

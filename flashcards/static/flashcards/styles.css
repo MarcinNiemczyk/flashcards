@@ -233,26 +233,38 @@ body {
 }
 
 .game-flashcards {
-    background-color: white;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
     height: 50vh;
     margin: 10px 0;
-    position: relative;
     width: 80%;
+    perspective: 5000px;
+    position: relative;
 }
 
 .game-flashcard {
-    align-items: center;
     display: none;
     height: 100%;
-    justify-content: center;
     position: absolute;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
     width: 100%;
 }
 
 .game-flashcard.active {
+    display: block;
+}
+
+.game-task,
+.game-solution {
+    background-color: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    align-items: center;
+    backface-visibility: hidden;
     display: flex;
+    height: 100%;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
 }
 
 .game-buttons {
@@ -265,14 +277,16 @@ body {
 }
 
 .game-solution {
-    display: none;
+    transform: rotateX(180deg);
 }
 
 .flashcard-counter {
+    color: gray;
+    font-size: 0.5em;
     left: 10px;
     position: absolute;
-    color: gray;
     top: 10px;
+    z-index: 1;
 }
 
 .settings {
@@ -283,14 +297,6 @@ body {
 .game-flashcard {
     cursor: pointer;
     user-select: none;
-}
-
-.game-flashcard.flipped .game-task {
-    display: none;
-}
-
-.game-flashcard.flipped .game-solution {
-    display: block;
 }
 
 

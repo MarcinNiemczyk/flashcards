@@ -5,7 +5,11 @@ flashcards[currentFlashcardIndex].classList.add('active');
 
 flashcards.forEach((flashcard) => {
    flashcard.addEventListener('click', () => {
-      flashcard.classList.toggle('flipped');
+      if (flashcard.style.transform === 'rotateX(180deg)') {
+         flashcard.style.transform = 'rotateX(0deg)';
+      } else {
+         flashcard.style.transform = 'rotateX(180deg)';
+      }
    });
 });
 
