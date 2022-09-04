@@ -8,7 +8,7 @@ from django.http import JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
 from foreigner.settings import MEDIA_ROOT
-from .models import Collection, Flashcard, Log
+from .models import Collection, Flashcard, Log, Setting
 from .filters import CollectionFilter
 from users.models import User
 
@@ -319,11 +319,17 @@ def learn(request, collection_id):
     if request.user != collection.author and not collection.public:
         return HttpResponseForbidden()
 
+    try:
+        settings = Setting.objects.get(user=request.user, collection=collection)
+    except Setting.DoesNotExist:
+        settings = Setting.objects.create(user=request.user,collection=collection)
+
     # Update logs
     log = Log.objects.get(visitor=request.user, collection=collection)
     log.timestamp = datetime.now()
     log.save()
 
     return render(request, 'flashcards/learn.html', {
-        'collection': collection
+        'collection': collection,
+        'settings': settings.serialize()
     })

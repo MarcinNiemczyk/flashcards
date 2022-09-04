@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Collection, Flashcard, Log
+from .models import Collection, Flashcard, Log, Setting
 
 
 class FlashcardInline(admin.StackedInline):
@@ -22,3 +22,8 @@ class CollectionAdmin(admin.ModelAdmin):
 @admin.register(Log)
 class VisitAdmin(admin.ModelAdmin):
     list_display = ('id', 'visitor', 'collection', 'timestamp')
+
+
+@admin.register(Setting)
+class SettingAdmin(admin.ModelAdmin):
+    list_display = ('collection', 'user')

@@ -63,5 +63,6 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'flashcards/learn.js' %}"></script>
+    {{ settings|json_script:"settings" }}
+    <script src="{% static 'flashcards/learn.js' %}" type="module"></script>
 {% endblock %}

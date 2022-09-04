@@ -1,12 +1,27 @@
-const flashcards = document.querySelectorAll('.game-flashcard');
+import { getCookie } from "./utils.js";
 
-const id = window.location.pathname;
-const settings = loadSettings();
+const csrftoken = getCookie('csrftoken');
+const flashcards = document.querySelectorAll('.game-flashcard');
+const settings = JSON.parse(document.getElementById('settings').textContent);
+console.log(settings);
+
+let index = settings['index'];
 let random = settings['random'];
+let reversed = settings['reversed'];
 let order = settings['order'];
-let reverse = settings['reverse'];
-let currentFlashcardIndex = loadIndex();
-loadFlashcard(currentFlashcardIndex);
+
+if (order.trim().length === 0) {
+   order = setOrder();
+} else {
+   order = JSON.parse(order);
+}
+
+console.log(order);
+console.log(typeof(order));
+if (reversed) {
+   order = shuffle(order);
+}
+loadFlashcard(index);
 
 
 flashcards.forEach((flashcard) => {
@@ -20,80 +35,33 @@ flashcards.forEach((flashcard) => {
 });
 
 document.getElementById('prevButton').onclick = () => {
-   if (currentFlashcardIndex > 0) {
-      currentFlashcardIndex--;
-      loadFlashcard(currentFlashcardIndex);
-      setLocalStorage('index', currentFlashcardIndex);
+   if (index > 0) {
+      index--;
+      loadFlashcard(index);
    }
 }
 
 document.getElementById('nextButton').onclick = () => {
-   if (currentFlashcardIndex < flashcards.length - 1) {
-      currentFlashcardIndex++;
-      loadFlashcard(currentFlashcardIndex);
-      setLocalStorage('index', currentFlashcardIndex);
+   if (index < flashcards.length - 1) {
+      index++;
+      loadFlashcard(index);
    }
 }
 
-document.getElementById('resetProgress').onclick = () => {
-   resetFlashcards();
-}
+// document.getElementById('resetProgress').onclick = () => {
+//    resetFlashcards();
+// }
 
-document.getElementById('closeSettingsButton').onclick = () => {
-   // Ensure cancel button doesnt save switch buttons state
-   document.getElementById('randomizeButton').checked = random;
-   document.getElementById('reverseButton').checked = reverse;
-}
+// document.getElementById('closeSettingsButton').onclick = () => {
+//    // Ensure cancel button doesnt save switch buttons state
+//    document.getElementById('randomizeButton').checked = random;
+//    document.getElementById('reverseButton').checked = reverse;
+// }
 
-document.getElementById('saveSettings').onclick = () => {
-   updateRandomizeValue(document.getElementById('randomizeButton').checked);
-   updateReverseValue(document.getElementById('reverseButton').checked);
-}
-
-function loadIndex() {
-   let index;
-   if (checkLocalStorage('index')) {
-      index = parseInt(getLocalStorage('index'));
-      flashcards[index].classList.contains('active');
-   } else {
-      setLocalStorage('index', '0');
-      index = 0;
-   }
-   return index;
-}
-
-function loadSettings() {
-   let random;
-   let order;
-   let reverse;
-
-   if (getLocalStorage('random') === 'true') {
-      random = true;
-      document.getElementById('randomizeButton').checked = true;
-   } else {
-      setLocalStorage('random', 'false');
-      random = false;
-   }
-
-   if (checkLocalStorage('order')) {
-      order = JSON.parse(getLocalStorage('order'));
-   } else {
-      order = setOrder();
-   }
-
-   if (getLocalStorage('reverse') === 'true') {
-      reverse = true;
-      document.getElementById('reverseButton').checked = true;
-   } else {
-      setLocalStorage('reverse', 'false');
-      reverse = false;
-   }
-   if (reverse) {
-      document.querySelector('.game-flashcards').classList.add('reversed');
-   }
-
-   return {'random': random, 'order': order, 'reverse': reverse}
-}
+// document.getElementById('saveSettings').onclick = () => {
+//    updateRandomizeValue(document.getElementById('randomizeButton').checked);
+//    updateReverseValue(document.getElementById('reverseButton').checked);
+// }
 
 function loadFlashcard(index) {
    flashcards.forEach(flashcard => {
@@ -103,40 +71,39 @@ function loadFlashcard(index) {
    flashcards[order[index]].classList.add('active');
 }
 
-function resetFlashcards() {
-   setLocalStorage('index', '0');
-   currentFlashcardIndex = 0;
-   loadFlashcard(0);
-}
+// function resetFlashcards() {
+//    setLocalStorage('index', '0');
+//    currentFlashcardIndex = 0;
+//    loadFlashcard(0);
+// }
 
-function updateRandomizeValue(value) {
-   random = value;
-   setLocalStorage('random', value);
-   if (value) {
-      order = shuffle(order);
-      currentFlashcardIndex = order.indexOf(currentFlashcardIndex);
-   } else {
-      currentFlashcardIndex = order[currentFlashcardIndex];
-      order = setOrder();
-   }
-}
+// function updateRandomizeValue(value) {
+//    random = value;
+//    setLocalStorage('random', value);
+//    if (value) {
+//       order = shuffle(order);
+//       currentFlashcardIndex = order.indexOf(currentFlashcardIndex);
+//    } else {
+//       currentFlashcardIndex = order[currentFlashcardIndex];
+//       order = setOrder();
+//    }
+// }
 
-function updateReverseValue(value) {
-   reverse = value;
-   setLocalStorage('reverse', value);
-   if (value) {
-      document.querySelector('.game-flashcards').classList.add('reversed');
-   } else {
-      document.querySelector('.game-flashcards').classList.remove('reversed');
-   }
-}
+// function updateReverseValue(value) {
+//    reverse = value;
+//    setLocalStorage('reverse', value);
+//    if (value) {
+//       document.querySelector('.game-flashcards').classList.add('reversed');
+//    } else {
+//       document.querySelector('.game-flashcards').classList.remove('reversed');
+//    }
+// }
 
 function setOrder() {
    let order = [];
    for (let i = 0; i < flashcards.length; i++) {
       order.push(i);
    }
-   setLocalStorage('order', JSON.stringify(order));
    return order;
 }
 
@@ -149,20 +116,19 @@ function shuffle(array) {
       currentIndex--;
       [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
    }
-   setLocalStorage('order', JSON.stringify(array));
    return array;
 }
 
-function setLocalStorage(key, value) {
-   localStorage.setItem(`${id}${key}`, value);
-}
-
-function getLocalStorage(key) {
-   item = localStorage.getItem(`${id}${key}`);
-   return item;
-}
-
-function checkLocalStorage(key) {
-   hasProperty = localStorage.hasOwnProperty(`${id}${key}`);
-   return hasProperty;
+function updateSettings() {
+   fetch('', {
+      method: 'PUT',
+      body: JSON.stringify({
+         'index': index,
+         'random': random,
+         'reversed': reversed
+      }),
+      headers: {
+         'X-CSRFToken': csrftoken
+      }
+   });
 }
