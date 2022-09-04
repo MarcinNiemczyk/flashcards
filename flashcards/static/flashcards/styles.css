@@ -242,11 +242,13 @@ body {
 
 .game-flashcard {
     display: none;
+    cursor: pointer;
     height: 100%;
     position: absolute;
     transition: transform 0.5s;
     transform-style: preserve-3d;
     width: 100%;
+    user-select: none;
 }
 
 .game-flashcard.active {
@@ -267,6 +269,18 @@ body {
     width: 100%;
 }
 
+.game-solution {
+    transform: rotateX(180deg);
+}
+
+.game-flashcards.reversed .game-solution {
+    transform: none;
+}
+
+.game-flashcards.reversed .game-task {
+    transform: rotateX(180deg);
+}
+
 .game-buttons {
     width: 80%;
 }
@@ -274,10 +288,6 @@ body {
 .game-buttons button {
     width: 100%;
     margin: 5px;
-}
-
-.game-solution {
-    transform: rotateX(180deg);
 }
 
 .flashcard-counter {
@@ -294,10 +304,6 @@ body {
     margin-right: 10%;
 }
 
-.game-flashcard {
-    cursor: pointer;
-    user-select: none;
-}
 
 
 @media (max-width: 1200px) {

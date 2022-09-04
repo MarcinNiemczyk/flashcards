@@ -3,6 +3,7 @@ const flashcards = document.querySelectorAll('.game-flashcard');
 const settings = loadSettings();
 let random = settings['random'];
 let order = settings['order'];
+let reverse = settings['reverse'];
 let currentFlashcardIndex = loadIndex();
 loadFlashcard(currentFlashcardIndex);
 
@@ -38,11 +39,8 @@ document.getElementById('resetProgress').onclick = () => {
 }
 
 document.getElementById('saveSettings').onclick = () => {
-   if (document.getElementById('randomizeButton').checked) {
-      updateRandomizeValue(true);
-   } else {
-      updateRandomizeValue(false);
-   }
+   updateRandomizeValue(document.getElementById('randomizeButton').checked);
+   updateReverseValue(document.getElementById('reverseButton').checked);
 }
 
 function loadIndex() {
@@ -60,6 +58,8 @@ function loadIndex() {
 function loadSettings() {
    let random;
    let order;
+   let reverse;
+
    if (localStorage.getItem('random') === 'true') {
       random = Boolean(localStorage.getItem('random'));
       document.getElementById('randomizeButton').checked = true;
@@ -67,12 +67,25 @@ function loadSettings() {
       localStorage.setItem('random', 'false');
       random = false;
    }
+
    if (localStorage.hasOwnProperty('order')) {
       order = JSON.parse(localStorage.getItem('order'));
    } else {
       order = setOrder();
    }
-   return {'random': random, 'order': order}
+
+   if (localStorage.getItem('random') === 'true') {
+      reverse = Boolean(localStorage.getItem('reverse'));
+      document.getElementById('reverseButton').checked = true;
+   } else {
+      localStorage.setItem('reverse', 'false');
+      reverse = false;
+   }
+   if (reverse) {
+      document.querySelector('.game-flashcards').classList.add('reversed');
+   }
+
+   return {'random': random, 'order': order, 'reverse': reverse}
 }
 
 function loadFlashcard(index) {
@@ -92,12 +105,21 @@ function resetFlashcards() {
 function updateRandomizeValue(value) {
    random = value;
    localStorage.setItem('random', value);
-   if (value === true) {
+   if (value) {
       order = shuffle(order);
    } else {
       order = setOrder();
    }
-   resetFlashcards();
+}
+
+function updateReverseValue(value) {
+   reverse = value;
+   localStorage.setItem('reverse', value);
+   if (value) {
+      document.querySelector('.game-flashcards').classList.add('reversed');
+   } else {
+      document.querySelector('.game-flashcards').classList.remove('reversed');
+   }
 }
 
 function setOrder() {
