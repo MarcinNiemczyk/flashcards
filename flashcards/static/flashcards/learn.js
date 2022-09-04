@@ -38,6 +38,11 @@ document.getElementById('resetProgress').onclick = () => {
    resetFlashcards();
 }
 
+document.getElementById('closeSettingsButton').onclick = () => {
+   document.getElementById('randomizeButton').checked = random;
+   document.getElementById('reverseButton').checked = reverse;
+}
+
 document.getElementById('saveSettings').onclick = () => {
    updateRandomizeValue(document.getElementById('randomizeButton').checked);
    updateReverseValue(document.getElementById('reverseButton').checked);
