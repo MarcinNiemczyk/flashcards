@@ -107,7 +107,9 @@ function updateRandomizeValue(value) {
    localStorage.setItem('random', value);
    if (value) {
       order = shuffle(order);
+      currentFlashcardIndex = order.indexOf(currentFlashcardIndex);
    } else {
+      currentFlashcardIndex = order[currentFlashcardIndex];
       order = setOrder();
    }
 }
