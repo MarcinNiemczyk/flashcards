@@ -39,6 +39,7 @@ document.getElementById('resetProgress').onclick = () => {
 }
 
 document.getElementById('closeSettingsButton').onclick = () => {
+   // Ensure cancel button doesnt save switch buttons state
    document.getElementById('randomizeButton').checked = random;
    document.getElementById('reverseButton').checked = reverse;
 }
@@ -66,7 +67,7 @@ function loadSettings() {
    let reverse;
 
    if (localStorage.getItem('random') === 'true') {
-      random = Boolean(localStorage.getItem('random'));
+      random = true;
       document.getElementById('randomizeButton').checked = true;
    } else {
       localStorage.setItem('random', 'false');
@@ -80,7 +81,7 @@ function loadSettings() {
    }
 
    if (localStorage.getItem('random') === 'true') {
-      reverse = Boolean(localStorage.getItem('reverse'));
+      reverse = true;
       document.getElementById('reverseButton').checked = true;
    } else {
       localStorage.setItem('reverse', 'false');
