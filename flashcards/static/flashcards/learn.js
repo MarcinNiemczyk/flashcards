@@ -1,5 +1,6 @@
 const flashcards = document.querySelectorAll('.game-flashcard');
 
+const id = window.location.pathname;
 const settings = loadSettings();
 let random = settings['random'];
 let order = settings['order'];
@@ -22,7 +23,7 @@ document.getElementById('prevButton').onclick = () => {
    if (currentFlashcardIndex > 0) {
       currentFlashcardIndex--;
       loadFlashcard(currentFlashcardIndex);
-      localStorage.setItem('index', currentFlashcardIndex);
+      setLocalStorage('index', currentFlashcardIndex);
    }
 }
 
@@ -30,7 +31,7 @@ document.getElementById('nextButton').onclick = () => {
    if (currentFlashcardIndex < flashcards.length - 1) {
       currentFlashcardIndex++;
       loadFlashcard(currentFlashcardIndex);
-      localStorage.setItem('index', currentFlashcardIndex);
+      setLocalStorage('index', currentFlashcardIndex);
    }
 }
 
@@ -51,11 +52,11 @@ document.getElementById('saveSettings').onclick = () => {
 
 function loadIndex() {
    let index;
-   if (localStorage.hasOwnProperty('index')) {
-      index = parseInt(localStorage.getItem('index'));
+   if (checkLocalStorage('index')) {
+      index = parseInt(getLocalStorage('index'));
       flashcards[index].classList.contains('active');
    } else {
-      localStorage.setItem('index', '0');
+      setLocalStorage('index', '0');
       index = 0;
    }
    return index;
@@ -66,25 +67,25 @@ function loadSettings() {
    let order;
    let reverse;
 
-   if (localStorage.getItem('random') === 'true') {
+   if (getLocalStorage('random') === 'true') {
       random = true;
       document.getElementById('randomizeButton').checked = true;
    } else {
-      localStorage.setItem('random', 'false');
+      setLocalStorage('random', 'false');
       random = false;
    }
 
-   if (localStorage.hasOwnProperty('order')) {
-      order = JSON.parse(localStorage.getItem('order'));
+   if (checkLocalStorage('order')) {
+      order = JSON.parse(getLocalStorage('order'));
    } else {
       order = setOrder();
    }
 
-   if (localStorage.getItem('random') === 'true') {
+   if (getLocalStorage('reverse') === 'true') {
       reverse = true;
       document.getElementById('reverseButton').checked = true;
    } else {
-      localStorage.setItem('reverse', 'false');
+      setLocalStorage('reverse', 'false');
       reverse = false;
    }
    if (reverse) {
@@ -103,14 +104,14 @@ function loadFlashcard(index) {
 }
 
 function resetFlashcards() {
-   localStorage.setItem('index', '0');
+   setLocalStorage('index', '0');
    currentFlashcardIndex = 0;
    loadFlashcard(0);
 }
 
 function updateRandomizeValue(value) {
    random = value;
-   localStorage.setItem('random', value);
+   setLocalStorage('random', value);
    if (value) {
       order = shuffle(order);
       currentFlashcardIndex = order.indexOf(currentFlashcardIndex);
@@ -122,7 +123,7 @@ function updateRandomizeValue(value) {
 
 function updateReverseValue(value) {
    reverse = value;
-   localStorage.setItem('reverse', value);
+   setLocalStorage('reverse', value);
    if (value) {
       document.querySelector('.game-flashcards').classList.add('reversed');
    } else {
@@ -135,7 +136,7 @@ function setOrder() {
    for (let i = 0; i < flashcards.length; i++) {
       order.push(i);
    }
-   localStorage.setItem('order', JSON.stringify(order));
+   setLocalStorage('order', JSON.stringify(order));
    return order;
 }
 
@@ -148,6 +149,20 @@ function shuffle(array) {
       currentIndex--;
       [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
    }
-   localStorage.setItem('order', JSON.stringify(array));
+   setLocalStorage('order', JSON.stringify(array));
    return array;
+}
+
+function setLocalStorage(key, value) {
+   localStorage.setItem(`${id}${key}`, value);
+}
+
+function getLocalStorage(key) {
+   item = localStorage.getItem(`${id}${key}`);
+   return item;
+}
+
+function checkLocalStorage(key) {
+   hasProperty = localStorage.hasOwnProperty(`${id}${key}`);
+   return hasProperty;
 }
