@@ -3,12 +3,12 @@ import { getCookie } from "./utils.js";
 const csrftoken = getCookie('csrftoken');
 const flashcards = document.querySelectorAll('.game-flashcard');
 const settings = JSON.parse(document.getElementById('settings').textContent);
-console.log(settings);
 
 let index = settings['index'];
 let random = settings['random'];
 let reversed = settings['reversed'];
 let order = settings['order'];
+loadSettings();
 
 if (order.trim().length === 0) {
    order = setOrder();
@@ -16,8 +16,6 @@ if (order.trim().length === 0) {
    order = JSON.parse(order);
 }
 
-console.log(order);
-console.log(typeof(order));
 if (reversed) {
    order = shuffle(order);
 }
@@ -38,6 +36,7 @@ document.getElementById('prevButton').onclick = () => {
    if (index > 0) {
       index--;
       loadFlashcard(index);
+      updateSettings();
    }
 }
 
@@ -45,23 +44,23 @@ document.getElementById('nextButton').onclick = () => {
    if (index < flashcards.length - 1) {
       index++;
       loadFlashcard(index);
+      updateSettings();
    }
 }
 
-// document.getElementById('resetProgress').onclick = () => {
-//    resetFlashcards();
-// }
+document.getElementById('resetProgress').onclick = () => {
+   resetFlashcards();
+}
 
-// document.getElementById('closeSettingsButton').onclick = () => {
-//    // Ensure cancel button doesnt save switch buttons state
-//    document.getElementById('randomizeButton').checked = random;
-//    document.getElementById('reverseButton').checked = reverse;
-// }
+document.getElementById('closeSettingsButton').onclick = () => {
+   loadSettings();
+}
 
-// document.getElementById('saveSettings').onclick = () => {
-//    updateRandomizeValue(document.getElementById('randomizeButton').checked);
-//    updateReverseValue(document.getElementById('reverseButton').checked);
-// }
+document.getElementById('saveSettings').onclick = () => {
+   updateRandomizeValue(document.getElementById('randomizeButton').checked);
+   updateReverseValue(document.getElementById('reverseButton').checked);
+   updateSettings();
+}
 
 function loadFlashcard(index) {
    flashcards.forEach(flashcard => {
@@ -71,33 +70,36 @@ function loadFlashcard(index) {
    flashcards[order[index]].classList.add('active');
 }
 
-// function resetFlashcards() {
-//    setLocalStorage('index', '0');
-//    currentFlashcardIndex = 0;
-//    loadFlashcard(0);
-// }
+function loadSettings() {
+   document.getElementById('randomizeButton').checked = random;
+   document.getElementById('reverseButton').checked = reversed;
+}
 
-// function updateRandomizeValue(value) {
-//    random = value;
-//    setLocalStorage('random', value);
-//    if (value) {
-//       order = shuffle(order);
-//       currentFlashcardIndex = order.indexOf(currentFlashcardIndex);
-//    } else {
-//       currentFlashcardIndex = order[currentFlashcardIndex];
-//       order = setOrder();
-//    }
-// }
+function resetFlashcards() {
+   index = 0;
+   loadFlashcard(0);
+   updateSettings();
+}
 
-// function updateReverseValue(value) {
-//    reverse = value;
-//    setLocalStorage('reverse', value);
-//    if (value) {
-//       document.querySelector('.game-flashcards').classList.add('reversed');
-//    } else {
-//       document.querySelector('.game-flashcards').classList.remove('reversed');
-//    }
-// }
+function updateRandomizeValue(status) {
+   random = status;
+   if (status) {
+      order = shuffle(order);
+      index = order.indexOf(index);
+   } else {
+      index = order[index];
+      order = setOrder();
+   }
+}
+
+function updateReverseValue(status) {
+   reversed = status;
+   if (status) {
+      document.querySelector('.game-flashcards').classList.add('reversed');
+   } else {
+      document.querySelector('.game-flashcards').classList.remove('reversed');
+   }
+}
 
 function setOrder() {
    let order = [];
@@ -125,7 +127,8 @@ function updateSettings() {
       body: JSON.stringify({
          'index': index,
          'random': random,
-         'reversed': reversed
+         'reversed': reversed,
+         'order': order
       }),
       headers: {
          'X-CSRFToken': csrftoken

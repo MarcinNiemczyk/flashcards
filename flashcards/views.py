@@ -324,6 +324,21 @@ def learn(request, collection_id):
     except Setting.DoesNotExist:
         settings = Setting.objects.create(user=request.user,collection=collection)
 
+    if request.method == 'PUT':
+        data = json.load(request)
+
+        index = int(data.get('index'))
+        random = bool(data.get('random'))
+        reverse = bool(data.get('reversed'))
+        order = data.get('order')
+
+        settings.index = index
+        settings.random = random
+        settings.reverse = reverse
+        settings.order = order
+        settings.save()
+        return JsonResponse({}, status=204)
+
     # Update logs
     log = Log.objects.get(visitor=request.user, collection=collection)
     log.timestamp = datetime.now()
