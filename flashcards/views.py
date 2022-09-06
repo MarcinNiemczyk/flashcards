@@ -344,7 +344,10 @@ def learn(request, collection_id):
         return JsonResponse({}, status=204)
 
     # Update logs
-    log = Log.objects.get(visitor=request.user, collection=collection)
+    try:
+        log = Log.objects.get(visitor=request.user, collection=collection)
+    except Log.DoesNotExist:
+        log = Log.objects.create(visitor=request.user, collection=collection)
     log.timestamp = datetime.now()
     log.save()
 
