@@ -225,6 +225,87 @@ body {
     display: flex;
 }
 
+.game-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.game-flashcards {
+    height: 50vh;
+    margin: 10px 0;
+    width: 80%;
+    perspective: 5000px;
+    position: relative;
+}
+
+.game-flashcard {
+    display: none;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+    width: 100%;
+    user-select: none;
+}
+
+.game-flashcard.active {
+    display: block;
+}
+
+.game-task,
+.game-solution {
+    background-color: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    align-items: center;
+    backface-visibility: hidden;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+}
+
+.game-solution {
+    transform: rotateX(180deg);
+}
+
+.game-flashcards.reversed .game-solution {
+    transform: none;
+}
+
+.game-flashcards.reversed .game-task {
+    transform: rotateX(180deg);
+}
+
+.game-buttons {
+    width: 80%;
+}
+
+.game-buttons button {
+    width: 100%;
+    margin: 5px;
+}
+
+.flashcard-counter {
+    color: gray;
+    font-size: 0.5em;
+    left: 10px;
+    position: absolute;
+    top: 10px;
+    z-index: 1;
+}
+
+.settings {
+    align-self: flex-end;
+    margin-right: 10%;
+}
+
+
+
 @media (max-width: 1200px) {
     .profile-image img {
         height: 90px;
@@ -277,5 +358,14 @@ body {
     .profile-image img {
         height: 64px;
         width: 64px;
+    }
+
+    .game-flashcards,
+    .game-buttons {
+        width: 100%;
+    }
+
+    .settings {
+        margin: 0;
     }
 }

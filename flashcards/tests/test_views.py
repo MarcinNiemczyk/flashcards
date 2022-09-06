@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from users.models import User
 from flashcards import LANGUAGES
-from flashcards.models import Collection, Log
+from flashcards.models import Collection, Flashcard, Log
 
 
 class ExploreViewTest(TestCase):
@@ -446,3 +446,77 @@ class ProfileViewTest(TestCase):
         response = self.client.get(reverse('profile', kwargs={'username': 'testuser1'}) + '?page=2')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['collections']), 4)
+
+
+class LearnViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        testuser1 = User.objects.create_user(
+            username='testuser1',
+            password='7,a}MXe+oTJL'
+        )
+        User.objects.create_user(
+            username='testuser2',
+            password='NqCJAB}N~@Wg'
+        )
+        number_of_flashcards = 3
+
+        collection1 = Collection.objects.create(
+            author=testuser1,
+            title='Testuser1 private collection',
+            public=False,
+            language1='english',
+            language2='english'
+        )
+        for i in range(number_of_flashcards):
+            Flashcard.objects.create(
+                task=f'task{i}',
+                solution=f'solution{i}',
+                collection=collection1
+            )
+
+        collection2 = Collection.objects.create(
+            author=testuser1,
+            title='Testuser1 public collection',
+            public=True,
+            language1='english',
+            language2='english'
+        )
+        for i in range(number_of_flashcards):
+            Flashcard.objects.create(
+                task=f'task{i}',
+                solution=f'solution{i}',
+                collection=collection2
+            )
+
+
+    def test_view_url_exists_at_desired_location(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get('/learn/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('learn', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('learn', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'flashcards/learn.html')
+
+    def test_view_private_collection_not_accessible_for_others(self):
+        self.client.login(username='testuser2', password='NqCJAB}N~@Wg')
+        response = self.client.get(reverse('learn', kwargs={'collection_id': 1}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_view_user_can_learn_from_public_collections(self):
+        self.client.login(username='testuser2', password='NqCJAB}N~@Wg')
+        response = self.client.get(reverse('learn', kwargs={'collection_id': 2}))
+        self.assertEqual(response.status_code, 200)
+        
+    def test_view_lists_all_flashcards(self):
+        self.client.login(username='testuser1', password='7,a}MXe+oTJL')
+        response = self.client.get(reverse('learn', kwargs={'collection_id': 1}))
+        self.assertEqual(response.context['collection'].flashcards.count(), 3)

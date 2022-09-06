@@ -8,7 +8,7 @@ from django.http import JsonResponse, Http404, HttpResponseForbidden
 from django.db.models import Q
 from flashcards import LANGUAGES, MIN_FLASHCARDS
 from foreigner.settings import MEDIA_ROOT
-from .models import Collection, Flashcard, Log
+from .models import Collection, Flashcard, Log, Setting
 from .filters import CollectionFilter
 from users.models import User
 
@@ -132,6 +132,10 @@ def edit_collection(request, collection_id):
         collection.language1 = data['language1']
         collection.language2 = data['language2']
         collection.save()
+
+        # Reset users game state if number of flashcards changed
+        if len(data['flashcards']) != collection.flashcards.count():
+            Setting.objects.filter(collection=collection).delete()
 
         # Replace flashcards
         collection.flashcards.all().delete()
@@ -305,4 +309,49 @@ def profile(request, username):
     return render(request, 'flashcards/profile.html', {
         'profile': user,
         'collections': page_obj
+    })
+
+
+@login_required
+def learn(request, collection_id):
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        raise Http404('Collection not found')
+
+    # Ensure user cannot access other private collections
+    if request.user != collection.author and not collection.public:
+        return HttpResponseForbidden()
+
+    try:
+        settings = Setting.objects.get(user=request.user, collection=collection)
+    except Setting.DoesNotExist:
+        settings = Setting.objects.create(user=request.user,collection=collection)
+
+    if request.method == 'PUT':
+        data = json.load(request)
+
+        index = int(data.get('index'))
+        random = bool(data.get('random'))
+        reversed = bool(data.get('reversed'))
+        order = data.get('order')
+
+        settings.index = index
+        settings.random = random
+        settings.reversed = reversed
+        settings.order = order
+        settings.save()
+        return JsonResponse({}, status=204)
+
+    # Update logs
+    try:
+        log = Log.objects.get(visitor=request.user, collection=collection)
+    except Log.DoesNotExist:
+        log = Log.objects.create(visitor=request.user, collection=collection)
+    log.timestamp = datetime.now()
+    log.save()
+
+    return render(request, 'flashcards/learn.html', {
+        'collection': collection,
+        'settings': settings.serialize()
     })
