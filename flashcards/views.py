@@ -133,7 +133,7 @@ def edit_collection(request, collection_id):
         collection.language2 = data['language2']
         collection.save()
 
-        # Reset settings if number of flashcards changed
+        # Reset users game state if number of flashcards changed
         if len(data['flashcards']) != collection.flashcards.count():
             Setting.objects.filter(collection=collection).delete()
 
@@ -333,12 +333,12 @@ def learn(request, collection_id):
 
         index = int(data.get('index'))
         random = bool(data.get('random'))
-        reverse = bool(data.get('reversed'))
+        reversed = bool(data.get('reversed'))
         order = data.get('order')
 
         settings.index = index
         settings.random = random
-        settings.reverse = reverse
+        settings.reversed = reversed
         settings.order = order
         settings.save()
         return JsonResponse({}, status=204)

@@ -9,16 +9,6 @@ let random = settings['random'];
 let reversed = settings['reversed'];
 let order = settings['order'];
 loadSettings();
-
-if (order.trim().length === 0) {
-   order = setOrder();
-} else {
-   order = JSON.parse(order);
-}
-
-if (reversed) {
-   order = shuffle(order);
-}
 loadFlashcard(index);
 
 
@@ -73,6 +63,15 @@ function loadFlashcard(index) {
 function loadSettings() {
    document.getElementById('randomizeButton').checked = random;
    document.getElementById('reverseButton').checked = reversed;
+   if (order.trim().length === 0) {
+      order = setOrder();
+   } else {
+      order = JSON.parse(order);
+   }
+   
+   if (reversed) {
+      updateReverseValue(reversed);
+   }
 }
 
 function resetFlashcards() {
@@ -82,13 +81,15 @@ function resetFlashcards() {
 }
 
 function updateRandomizeValue(status) {
-   random = status;
-   if (status) {
-      order = shuffle(order);
-      index = order.indexOf(index);
-   } else {
-      index = order[index];
-      order = setOrder();
+   if (status != random) {
+      random = status;
+      if (status) {
+         order = shuffle(order);
+         index = order.indexOf(index);
+      } else {
+         index = order[index];
+         order = setOrder();
+      }
    }
 }
 
