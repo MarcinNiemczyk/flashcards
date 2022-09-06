@@ -133,6 +133,10 @@ def edit_collection(request, collection_id):
         collection.language2 = data['language2']
         collection.save()
 
+        # Reset settings if number of flashcards changed
+        if len(data['flashcards']) != collection.flashcards.count():
+            Setting.objects.filter(collection=collection).delete()
+
         # Replace flashcards
         collection.flashcards.all().delete()
         for flashcard in data['flashcards']:
