@@ -101,7 +101,11 @@
         </nav>
     {% endif %}
 
+    {% include 'flashcards/instructions.html' %}
+
 {% endblock %}
+
+
 
 {% block script %}
     <script src="{% static 'flashcards/explore.js' %}"></script>
