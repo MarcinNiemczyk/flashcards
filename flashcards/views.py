@@ -243,8 +243,12 @@ def collection(request, collection_id):
 
         if request.user in collection.followers.all():
             collection.followers.remove(request.user)
+            log = Log.objects.get(visitor=request.user, collection=collection)
+            log.delete()
         else:
             collection.followers.add(request.user)
+            Log.objects.create(visitor=request.user, collection=collection)
+
         return JsonResponse({
             'success': 'Successfully updated followers list'
         }, status=200)
@@ -261,6 +265,8 @@ def collection(request, collection_id):
         else:
             log.timestamp = datetime.now()
             log.save()
+
+
 
     return render(request, 'flashcards/collection.html', {
         'collection': collection
