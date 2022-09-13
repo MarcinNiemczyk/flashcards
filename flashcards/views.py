@@ -243,11 +243,10 @@ def collection(request, collection_id):
 
         if request.user in collection.followers.all():
             collection.followers.remove(request.user)
-            log = Log.objects.get(visitor=request.user, collection=collection)
-            log.delete()
         else:
             collection.followers.add(request.user)
-            Log.objects.create(visitor=request.user, collection=collection)
+            if not Log.objects.filter(visitor=request.user, collection=collection).exists():
+                Log.objects.create(visitor=request.user, collection=collection)
 
         return JsonResponse({
             'success': 'Successfully updated followers list'
