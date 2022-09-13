@@ -126,6 +126,10 @@ def edit_collection(request, collection_id):
         # Load collection
         collection = Collection.objects.get(id=collection_id)
 
+        # Handle privatization
+        if not data['visibility']:
+            collection.followers.clear()
+
         # Update collection
         collection.title = data['title']
         collection.public = data['visibility']
