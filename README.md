@@ -85,7 +85,8 @@ Profile link is attached in many points, mainly as an author of collection. To d
 ### Tech Stack <a name="tech-stack"></a>
 - Django
 - JavaScript
-- SQLite
+- PostgreSQL
+- AWS S3
 - Bootstrap 5
 - HTML
 - CSS
