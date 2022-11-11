@@ -1,11 +1,10 @@
-# Flashcards - CS50W Final Project 2022 <a name="introduction"></a>
+# Flashcards <a name="introduction"></a>
 
 ### Table of Contents
 - [Introduction](#introduction)
 	- [What is a flashcard?](#what-is-a-flashcard)
 	- [How to use it?](#how-to-use-flashcards)
 - [Overview](#overview)
-	- [Distinctiveness and Complexity*](#distinctiveness-and-complexity)
 	- [✨ Demo](#demo)
 	- [🚀 Usage](#usage)
 	- [Background](#background)
@@ -28,12 +27,6 @@ Flashcards exercise the mental process of **active recall**: given a prompt (the
 - Using flashcards can be a very effective self-testing approach.
 
 ## Overview <a name="overview"></a>
-
-### Distinctiveness and Complexity* <a name="distinctiveness-and-complexity"></a>
-<span style="color:gray">_*This paragraph was required by CS50's staff in Project description, to check more requirements [click here](https://cs50.harvard.edu/web/2020/projects/final/capstone/)._</span>
-
-
-This application is completely different than any other project related with CS50. Although it provides connection between users, like social network, it is actually used for following collections of flashcards shared publicly.
 
 Project is built as a dynamic website using *Model-View-Template* pattern, where **Django** is utilized as a back-end language, and **JavaScript** on the front-end. Application supports mobile screens as well as desktop ones.
 
