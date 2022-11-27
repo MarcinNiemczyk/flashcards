@@ -12,4 +12,4 @@ jobs:
                   pip install -r requirements.txt
             - name: Test models
               run: |
-                  python manage.py test flashcards.tests.test_models
+                  python manage.py test backend.tests.test_models

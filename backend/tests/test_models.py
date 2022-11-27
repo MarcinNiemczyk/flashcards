@@ -21,7 +21,8 @@ class DeckModelTest(TestCase):
             self.fail(ValidationError.message)
 
         with self.assertRaises(ValidationError):
-            Deck.objects.create(name="bar", box_amount=7)
+            deck = Deck.objects.create(name="bar", box_amount=7)
+            deck.full_clean()
 
     def test_box_amount_min_value(self):
         try:
@@ -30,7 +31,8 @@ class DeckModelTest(TestCase):
             self.fail(ValidationError.message)
 
         with self.assertRaises(ValidationError):
-            Deck.objects.create(name="bar", box_amount=0)
+            deck = Deck.objects.create(name="bar", box_amount=0)
+            deck.full_clean()
 
 
 class BoxModelTest(TestCase):
