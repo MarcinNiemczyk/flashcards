@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from backend.models import Box, Deck
+from api.models import Box, Deck
 
 
 @receiver(post_save, sender=Deck)

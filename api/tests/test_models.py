@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from backend.models import Box, Card, Deck
+from api.models import Box, Card, Deck
 
 
 class DeckModelTest(TestCase):
