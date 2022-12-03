@@ -3,3 +3,4 @@ __pycache__/
 .idea/
 migrations/
 db.sqlite3
+.coverage
