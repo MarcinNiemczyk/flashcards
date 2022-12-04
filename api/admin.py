@@ -11,6 +11,7 @@ class DeckAdmin(admin.ModelAdmin):
     list_display = ("__str__", "get_total_cards", "box_amount", "get_author")
     list_filter = ("name", "author")
     search_fields = ("name", "author__username")
+    readonly_fields = ("id",)
 
     def get_total_cards(self, obj):
         return Box.objects.filter(deck=obj).aggregate(Count("card"))[
