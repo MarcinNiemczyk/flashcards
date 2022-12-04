@@ -1,8 +1,8 @@
-from rest_framework import routers
+from django.urls import path
 
-from api.views import DeckViewSet
+from api.views import DeckDetailView, DeckListView
 
-router = routers.DefaultRouter()
-router.register(r"decks", DeckViewSet, basename="deck")
-
-urlpatterns = router.urls
+urlpatterns = [
+    path("decks/", DeckListView.as_view()),
+    path("decks/<pk>", DeckDetailView.as_view()),
+]
