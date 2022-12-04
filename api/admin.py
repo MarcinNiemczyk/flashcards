@@ -31,6 +31,13 @@ class CardInline(admin.TabularInline):
     model = Card
     extra = 0
 
+    def get_card_link(self, obj):
+        url = reverse("admin:api_card_change", args=(obj.id,))
+        return format_html("<a href='{}'>{}</a>", url, str(obj))
+
+    get_card_link.short_description = "card link"
+    readonly_fields = ("get_card_link",)
+
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):
