@@ -55,6 +55,52 @@ class BoxModelTest(TestCase):
         box3 = Box.objects.get(pk=3)
         self.assertEqual(box3.number_of, 3)
 
+    def test_update_deck_box_amount_to_higher_value_adds_boxes(self):
+        deck = Deck.objects.get(pk=1)
+        expected_box_amount = deck.box_amount + 1
+        deck.box_amount = expected_box_amount
+        deck.save()
+        self.assertEqual(Box.objects.count(), expected_box_amount)
+
+    def test_update_deck_box_amount_to_lower_value_reduces_box_objects(self):
+        deck = Deck.objects.get(pk=1)
+        expected_box_amount = deck.box_amount - 1
+        deck.box_amount = expected_box_amount
+        deck.save()
+        self.assertEqual(Box.objects.count(), expected_box_amount)
+
+    def test_update_deck_to_equal_value_does_not_change_anything(self):
+        deck = Deck.objects.get(pk=1)
+        expected_box_amount = deck.box_amount
+        deck.box_amount = expected_box_amount
+        deck.save()
+        self.assertEqual(Box.objects.count(), expected_box_amount)
+
+    def test_update_deck_box_amount_to_lower_value_moves_cards_to_last_deck(
+        self,
+    ):
+        deck = Deck.objects.get(pk=1)
+        box_amount = deck.box_amount
+        cards_per_deck = 5
+        for number_of in range(1, box_amount + 1):
+            box = Box.objects.get(number_of=number_of, deck=deck)
+            for i in range(cards_per_deck):
+                Card.objects.create(front="foo", back="bar", box=box)
+        expected_total_cards = box_amount * cards_per_deck
+        self.assertEqual(Card.objects.count(), expected_total_cards)
+
+        reduce_number = 2
+        deck.box_amount = box_amount - reduce_number
+        deck.save()
+        new_last_box = Box.objects.get(number_of=deck.box_amount, deck=deck)
+        self.assertEqual(Card.objects.count(), expected_total_cards)
+        expected_cards_in_last_deck = (
+            reduce_number * cards_per_deck + cards_per_deck
+        )
+        self.assertEqual(
+            new_last_box.card_set.count(), expected_cards_in_last_deck
+        )
+
     def test_object_name_is_number_of_and_deck_name(self):
         box = Box.objects.get(pk=1)
         number_of = str(box.number_of)
