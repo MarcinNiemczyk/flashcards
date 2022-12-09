@@ -21,3 +21,14 @@ class DeckSerializer(serializers.ModelSerializer):
         deck = Deck(author=author, **validated_data)
         deck.save()
         return deck
+
+
+class BoxSerializer(serializers.ModelSerializer):
+    total_cards = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Box
+        fields = ["id", "number_of", "total_cards"]
+
+    def get_total_cards(self, obj):
+        return obj.card_set.count()
