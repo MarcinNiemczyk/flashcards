@@ -5,7 +5,7 @@ from rest_framework.generics import (
 )
 
 from api.models import Box, Deck
-from api.permissions import IsBoxAuthor, IsDeckAuthor
+from api.permissions import IsDeckAuthor
 from api.serializers import BoxSerializer, DeckSerializer
 
 
@@ -24,8 +24,10 @@ class DeckDetailView(RetrieveUpdateDestroyAPIView):
 
 class BoxListView(ListAPIView):
     serializer_class = BoxSerializer
-    permission_classes = [IsBoxAuthor]
 
     def get_queryset(self):
-        deck_id = self.kwargs.get("deck_id")
-        return Box.objects.filter(deck_id=deck_id).all()
+        queryset = Box.objects.filter(deck__author=self.request.user).all()
+        deck_id = self.request.query_params.get("deck")
+        if deck_id is not None:
+            queryset = queryset.filter(deck__id=deck_id)
+        return queryset
