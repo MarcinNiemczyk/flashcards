@@ -91,3 +91,54 @@ class DeckViewTestCase(TestCase):
         author = User.objects.get(pk=1)
         new_deck = Deck.objects.get(name="newdeck")
         self.assertEqual(new_deck.author, author)
+
+
+class BoxViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_user("foo", "foo@foo.com", "foo")
+        User.objects.create_user("bar", "bar@bar.com", "bar")
+        Deck.objects.create(
+            name="foodeck", box_amount=1, author=User.objects.get(pk=1)
+        )
+        Deck.objects.create(
+            name="bardeck", box_amount=1, author=User.objects.get(pk=2)
+        )
+
+    def setUp(self):
+        self.client.force_login(User.objects.get(pk=1))
+
+    def test_box_view_exists_at_desired_location(self):
+        response = self.client.get(reverse("box-list", kwargs={"deck_id": 1}))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/api/decks/1/boxes/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_only_list_method_is_allowed(self):
+        response = self.client.options(
+            reverse("box-list", kwargs={"deck_id": 1})
+        )
+        allowed_methods = response.headers.get("Allow").split(", ")
+        expected_methods = ["GET", "HEAD", "OPTIONS"]
+        self.assertCountEqual(allowed_methods, expected_methods)
+
+    def test_invalid_deck_number_raises_404(self):
+        response = self.client.get(reverse("box-list", kwargs={"deck_id": 3}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_can_access_only_own_deck_boxes(self):
+        response = self.client.get(reverse("box-list", kwargs={"deck_id": 2}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_output_contains_expected_fields(self):
+        response = self.client.get(reverse("box-list", kwargs={"deck_id": 1}))
+        expected_fields = ["id", "number_of", "total_cards"]
+        self.assertCountEqual(response.data[0], expected_fields)
+
+    def test_total_cards_count_cards_for_specific_box(self):
+        response = self.client.get(reverse("box-list", kwargs={"deck_id": 1}))
+        self.assertEqual(response.data[0]["total_cards"], 0)
+
+        Card.objects.create(front="foo", back="bar", box=Box.objects.get(pk=1))
+        response = self.client.get(reverse("box-list", kwargs={"deck_id": 1}))
+        self.assertEqual(response.data[0]["total_cards"], 1)
