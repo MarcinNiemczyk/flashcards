@@ -50,7 +50,12 @@ class DeckViewTestCase(TestCase):
         response = self.client.get(reverse("deck-detail", kwargs={"pk": 1}))
         self.assertEqual(response.data.get("total_cards"), 0)
 
-        Card.objects.create(front="foo", back="bar", box=Box.objects.get(pk=1))
+        Card.objects.create(
+            front="foo",
+            back="bar",
+            box=Box.objects.get(pk=1),
+            deck=Deck.objects.get(pk=1),
+        )
         response = self.client.get(reverse("deck-detail", kwargs={"pk": 1}))
         self.assertEqual(response.data.get("total_cards"), 1)
 
@@ -58,8 +63,18 @@ class DeckViewTestCase(TestCase):
         Deck.objects.create(
             name="foodeck", box_amount=1, author=User.objects.get(pk=1)
         )
-        Card.objects.create(front="foo", back="bar", box=Box.objects.get(pk=1))
-        Card.objects.create(front="foo", back="bar", box=Box.objects.get(pk=3))
+        Card.objects.create(
+            front="foo",
+            back="bar",
+            box=Box.objects.get(pk=1),
+            deck=Deck.objects.get(pk=1),
+        )
+        Card.objects.create(
+            front="foo",
+            back="bar",
+            box=Box.objects.get(pk=3),
+            deck=Deck.objects.get(pk=1),
+        )
         response = self.client.get(reverse("deck-detail", kwargs={"pk": 1}))
         self.assertEqual(response.data.get("total_cards"), 1)
         response = self.client.get(reverse("deck-detail", kwargs={"pk": 3}))
@@ -71,7 +86,9 @@ class DeckViewTestCase(TestCase):
         )
         for i in range(deck.box_amount):
             box = Box.objects.get(deck=deck, number_of=i + 1)
-            Card.objects.create(front="foo", back="bar", box=box)
+            Card.objects.create(
+                front="foo", back="bar", box=box, deck=Deck.objects.get(pk=1)
+            )
         response = self.client.get(reverse("deck-detail", kwargs={"pk": 3}))
         self.assertEqual(response.data.get("total_cards"), 3)
 
@@ -133,6 +150,11 @@ class BoxViewTest(TestCase):
         response = self.client.get("/api/boxes/?deck=1")
         self.assertEqual(response.data[0]["total_cards"], 0)
 
-        Card.objects.create(front="foo", back="bar", box=Box.objects.get(pk=1))
+        Card.objects.create(
+            front="foo",
+            back="bar",
+            box=Box.objects.get(pk=1),
+            deck=Deck.objects.get(pk=1),
+        )
         response = self.client.get("/api/boxes/?deck=1")
         self.assertEqual(response.data[0]["total_cards"], 1)

@@ -85,7 +85,9 @@ class BoxModelTest(TestCase):
         for number_of in range(1, box_amount + 1):
             box = Box.objects.get(number_of=number_of, deck=deck)
             for i in range(cards_per_deck):
-                Card.objects.create(front="foo", back="bar", box=box)
+                Card.objects.create(
+                    front="foo", back="bar", box=box, deck=deck
+                )
         expected_total_cards = box_amount * cards_per_deck
         self.assertEqual(Card.objects.count(), expected_total_cards)
 
@@ -114,8 +116,10 @@ class CardModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         user = User.objects.create_user("foo", "foo@bar.com", "baz")
-        Deck.objects.create(name="foo", box_amount=1, author=user)
-        Card.objects.create(front="bar", back="baz", box=Box.objects.get(pk=1))
+        deck = Deck.objects.create(name="foo", box_amount=1, author=user)
+        Card.objects.create(
+            front="bar", back="baz", box=Box.objects.get(pk=1), deck=deck
+        )
 
     def test_front_max_length(self):
         card = Card.objects.get(pk=1)
