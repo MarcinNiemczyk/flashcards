@@ -4,9 +4,14 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
 )
 
-from api.models import Box, Deck
-from api.permissions import IsDeckAuthor
-from api.serializers import BoxSerializer, DeckSerializer
+from api.models import Box, Card, Deck
+from api.permissions import IsCardAuthor, IsDeckAuthor
+from api.serializers import (
+    BoxSerializer,
+    CardDetailSerializer,
+    CardListSerializer,
+    DeckSerializer,
+)
 
 
 class DeckListView(ListCreateAPIView):
@@ -26,8 +31,28 @@ class BoxListView(ListAPIView):
     serializer_class = BoxSerializer
 
     def get_queryset(self):
-        queryset = Box.objects.filter(deck__author=self.request.user).all()
+        queryset = Box.objects.filter(deck__author=self.request.user)
         deck_id = self.request.query_params.get("deck")
         if deck_id is not None:
             queryset = queryset.filter(deck__id=deck_id)
         return queryset
+
+
+class CardListView(ListCreateAPIView):
+    serializer_class = CardListSerializer
+
+    def get_queryset(self):
+        queryset = Card.objects.filter(deck__author=self.request.user)
+        deck_id = self.request.query_params.get("deck")
+        box_id = self.request.query_params.get("box")
+        if deck_id is not None:
+            queryset = queryset.filter(deck__id=deck_id)
+        if box_id is not None:
+            queryset = queryset.filter(box__id=box_id)
+        return queryset
+
+
+class CardDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Card.objects.all()
+    serializer_class = CardDetailSerializer
+    permission_classes = [IsCardAuthor]

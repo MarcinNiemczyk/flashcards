@@ -6,3 +6,10 @@ class IsDeckAuthor(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user == obj.author
+
+
+class IsCardAuthor(BasePermission):
+    message = "Only deck author can modify his cards"
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.deck.author

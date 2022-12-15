@@ -33,3 +33,4 @@ class Card(models.Model):
     active = models.BooleanField(default=True)
     delay = models.DateTimeField(blank=True, null=True)
     box = models.ForeignKey(Box, on_delete=models.CASCADE)
+    deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
