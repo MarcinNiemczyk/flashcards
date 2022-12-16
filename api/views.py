@@ -1,11 +1,12 @@
 from rest_framework.generics import (
     ListAPIView,
     ListCreateAPIView,
+    RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 
 from api.models import Box, Card, Deck
-from api.permissions import IsCardAuthor, IsDeckAuthor
+from api.permissions import IsBoxAuthor, IsCardAuthor, IsDeckAuthor
 from api.serializers import (
     BoxSerializer,
     CardDetailSerializer,
@@ -36,6 +37,12 @@ class BoxListView(ListAPIView):
         if deck_id is not None:
             queryset = queryset.filter(deck__id=deck_id)
         return queryset
+
+
+class BoxDetailView(RetrieveAPIView):
+    serializer_class = BoxSerializer
+    permission_classes = [IsBoxAuthor]
+    queryset = Box.objects.all()
 
 
 class CardListView(ListCreateAPIView):
