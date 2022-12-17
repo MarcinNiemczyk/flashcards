@@ -2,19 +2,41 @@ from django.db.models import Count
 from rest_framework import serializers
 
 from api.models import Box, Card, Deck
+from api.utils import (
+    get_box_cards_absolute_url,
+    get_box_detail_absolute_url,
+    get_card_detail_absolute_url,
+    get_deck_boxes_absolute_url,
+    get_deck_cards_absolute_url,
+    get_deck_detail_absolute_url,
+)
 
 
 class DeckSerializer(serializers.ModelSerializer):
     total_cards = serializers.SerializerMethodField()
+    links = serializers.SerializerMethodField()
 
     class Meta:
         model = Deck
-        fields = ["id", "name", "box_amount", "total_cards"]
+        fields = [
+            "name",
+            "box_amount",
+            "total_cards",
+            "links",
+        ]
 
     def get_total_cards(self, obj):
         return Box.objects.filter(deck=obj).aggregate(Count("card"))[
             "card__count"
         ]
+
+    def get_links(self, obj):
+        request = self.context["request"]
+        return {
+            "self": get_deck_detail_absolute_url(request, obj.id),
+            "boxes": get_deck_boxes_absolute_url(request, obj.id),
+            "cards": get_deck_cards_absolute_url(request, obj.id),
+        }
 
     def create(self, validated_data):
         author = self.context.get("request").user
@@ -25,13 +47,22 @@ class DeckSerializer(serializers.ModelSerializer):
 
 class BoxSerializer(serializers.ModelSerializer):
     total_cards = serializers.SerializerMethodField()
+    links = serializers.SerializerMethodField()
 
     class Meta:
         model = Box
-        fields = ["id", "number_of", "total_cards"]
+        fields = ["number_of", "total_cards", "links"]
 
     def get_total_cards(self, obj):
         return obj.card_set.count()
+
+    def get_links(self, obj):
+        request = self.context["request"]
+        return {
+            "self": get_box_detail_absolute_url(request, obj.id),
+            "deck": get_deck_detail_absolute_url(request, obj.deck.id),
+            "cards": get_box_cards_absolute_url(request, obj.id),
+        }
 
 
 class UserDecksForeignKey(serializers.PrimaryKeyRelatedField):
@@ -41,14 +72,20 @@ class UserDecksForeignKey(serializers.PrimaryKeyRelatedField):
 
 
 class CardListSerializer(serializers.ModelSerializer):
-    deck = UserDecksForeignKey()
+    deck = UserDecksForeignKey(write_only=True)
+    links = serializers.SerializerMethodField()
 
     class Meta:
         model = Card
-        fields = ["id", "front", "back", "active", "delay", "box", "deck"]
-        read_only_fields = ["active", "delay", "box", "deck"]
-        extra_kwargs = {
-            "deck": {"write_only": True},
+        fields = ["front", "back", "active", "delay", "deck", "links"]
+        read_only_fields = ["active", "delay"]
+
+    def get_links(self, obj):
+        request = self.context["request"]
+        return {
+            "self": get_card_detail_absolute_url(request, obj.id),
+            "box": get_box_detail_absolute_url(request, obj.box.id),
+            "deck": get_deck_detail_absolute_url(request, obj.deck.id),
         }
 
     def create(self, validated_data):
@@ -65,12 +102,18 @@ class DeckBoxesForeignKey(serializers.PrimaryKeyRelatedField):
 
 
 class CardDetailSerializer(serializers.ModelSerializer):
-    box = DeckBoxesForeignKey()
+    box = DeckBoxesForeignKey(write_only=True)
+    links = serializers.SerializerMethodField()
 
     class Meta:
         model = Card
-        fields = ["id", "front", "back", "active", "delay", "box", "deck"]
-        read_only_fields = ["active", "delay", "box", "deck"]
-        extra_kwargs = {
-            "box": {"write_only": True},
+        fields = ["front", "back", "active", "delay", "box", "links"]
+        read_only_fields = ["active", "delay"]
+
+    def get_links(self, obj):
+        request = self.context["request"]
+        return {
+            "self": get_card_detail_absolute_url(request, obj.id),
+            "box": get_box_detail_absolute_url(request, obj.box.id),
+            "deck": get_deck_detail_absolute_url(request, obj.deck.id),
         }
