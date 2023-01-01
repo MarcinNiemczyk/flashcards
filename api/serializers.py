@@ -117,3 +117,7 @@ class CardDetailSerializer(serializers.ModelSerializer):
             "box": get_box_detail_absolute_url(request, obj.box.id),
             "deck": get_deck_detail_absolute_url(request, obj.deck.id),
         }
+
+
+class AnswerSerializer(serializers.Serializer):
+    answer = serializers.BooleanField(write_only=True)

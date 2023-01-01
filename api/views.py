@@ -1,13 +1,17 @@
+from rest_framework import status
 from rest_framework.generics import (
+    CreateAPIView,
     ListAPIView,
     ListCreateAPIView,
     RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
+from rest_framework.response import Response
 
 from api.models import Box, Card, Deck
 from api.permissions import IsBoxAuthor, IsCardAuthor, IsDeckAuthor
 from api.serializers import (
+    AnswerSerializer,
     BoxSerializer,
     CardDetailSerializer,
     CardListSerializer,
@@ -63,3 +67,21 @@ class CardDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Card.objects.all()
     serializer_class = CardDetailSerializer
     permission_classes = [IsCardAuthor]
+
+
+class AnswerView(CreateAPIView):
+    serializer_class = AnswerSerializer
+
+    def create(self, request, pk, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+        answer = serializer.validated_data.get("answer")
+        if answer:
+            return Response(
+                {"message": "Card has been moved to the next Box!"}
+            )
+        return Response({"message": "Card has been moved to the first Box :("})

@@ -1,6 +1,7 @@
 from django.urls import path
 
 from api.views import (
+    AnswerView,
     BoxDetailView,
     BoxListView,
     CardDetailView,
@@ -16,4 +17,5 @@ urlpatterns = [
     path("boxes/<int:pk>", BoxDetailView.as_view(), name="box-detail"),
     path("cards/", CardListView.as_view(), name="card-list"),
     path("cards/<int:pk>", CardDetailView.as_view(), name="card-detail"),
+    path("cards/<int:pk>/answer", AnswerView.as_view(), name="answer"),
 ]
