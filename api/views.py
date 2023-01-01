@@ -17,6 +17,7 @@ from api.serializers import (
     CardListSerializer,
     DeckSerializer,
 )
+from api.utils import move_card_to_first_box, move_card_to_next_box
 
 
 class DeckListView(ListCreateAPIView):
@@ -79,9 +80,15 @@ class AnswerView(CreateAPIView):
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+
         answer = serializer.validated_data.get("answer")
-        if answer:
+        if answer is True:
+            move_card_to_next_box(card_id=pk)
             return Response(
                 {"message": "Card has been moved to the next Box!"}
             )
-        return Response({"message": "Card has been moved to the first Box :("})
+        else:
+            move_card_to_first_box(card_id=pk)
+            return Response(
+                {"message": "Card has been moved to the first Box :("}
+            )
