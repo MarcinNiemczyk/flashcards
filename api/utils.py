@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.db import transaction
 from django.urls import reverse
 from django.utils import timezone
 
@@ -36,11 +37,13 @@ def get_card_detail_absolute_url(request, card_id):
     return request.build_absolute_uri(url)
 
 
+@transaction.atomic
 def add_boxes_in_deck(deck):
     for i in range(1, deck.box_amount + 1):
         Box.objects.create(number_of=i, deck=deck)
 
 
+@transaction.atomic
 def reduce_boxes_in_deck(deck):
     current_boxes = Box.objects.filter(deck=deck).count()
     new_box_amount = deck.box_amount
