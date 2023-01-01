@@ -68,29 +68,31 @@ def move_card_to_next_box(card_id):
         new_box = Box.objects.get(
             deck=card.deck, number_of=card.box.number_of + 1
         )
-        __move_card(card, new_box)
+        delay_time = card.box.settings.delay_correct
+        __move_card(card, new_box, delay_time)
 
 
 def move_card_to_first_box(card_id):
     card = Card.objects.get(pk=card_id)
     new_box = Box.objects.get(deck=card.deck, number_of=1)
-    __move_card(card, new_box)
+    delay_time = card.box.settings.delay_wrong
+    __move_card(card, new_box, delay_time)
 
 
-def __move_card(card, box):
+def __move_card(card, box, delay_time):
     card.box = box
-    __delay_card(card)
+    __delay_card(card, delay_time)
     card.save()
 
 
-def __delay_card(card):
+def __delay_card(card, time):
     """Hide card to the start of nth day"""
 
     card.active = False
     current_time = timezone.now()
     card.delay = (
         current_time
-        + timedelta(3)
+        + timedelta(time)
         - timedelta(
             days=0,
             hours=current_time.hour,

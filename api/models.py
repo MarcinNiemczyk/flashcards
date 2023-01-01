@@ -3,6 +3,22 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+class Settings(models.Model):
+    delay_correct = models.PositiveSmallIntegerField(
+        default=3, help_text="Delay correct answer in days"
+    )
+    delay_wrong = models.PositiveSmallIntegerField(
+        default=3, help_text="Delay wrong answer in days"
+    )
+    reverse = models.BooleanField(
+        default=False, help_text="Reverse card to question by rear side"
+    )
+    random_order = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = "Settings"
+
+
 class Deck(models.Model):
     name = models.CharField(max_length=50)
     box_amount = models.IntegerField(
@@ -22,9 +38,15 @@ class Box(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(6)]
     )
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
+    settings = models.ForeignKey(Settings, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{str(self.number_of)}/{str(self.deck.box_amount)} ({self.deck.name})"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.settings = Settings.objects.create()
+        super().save(*args, **kwargs)
 
 
 class Card(models.Model):

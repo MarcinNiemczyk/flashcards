@@ -3,7 +3,19 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 
-from api.models import Box, Card, Deck
+from api.models import Box, Card, Deck, Settings
+
+
+@admin.register(Settings)
+class SettingsAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "get_box")
+
+    def get_box(self, obj):
+        box = Box.objects.get(settings=obj)
+        url = reverse("admin:api_box_change", args=(box.id,))
+        return format_html("<a href='{}'>{}</a>", url, str(box))
+
+    get_box.short_description = "box"
 
 
 @admin.register(Deck)
@@ -49,7 +61,7 @@ class BoxAdmin(admin.ModelAdmin):
     list_display = ("__str__", "get_cards", "get_deck_link")
     list_filter = ("deck",)
     search_fields = ("deck__name", "deck__author__username")
-    readonly_fields = ("number_of", "deck")
+    readonly_fields = ("number_of", "deck", "settings")
 
     def get_cards(self, obj):
         return obj.card_set.count()
