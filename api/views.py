@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
@@ -10,7 +9,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 
-from api.models import Box, Card, Deck, Settings
+from api.models import Box, Card, Deck
 from api.permissions import (
     IsBoxAuthor,
     IsCardAuthor,
@@ -20,22 +19,12 @@ from api.permissions import (
 from api.serializers import (
     AnswerSerializer,
     BoxSerializer,
+    BoxSettingsSerializer,
     CardDetailSerializer,
     CardListSerializer,
     DeckSerializer,
-    SettingsSerializer,
 )
 from api.utils import move_card_to_first_box, move_card_to_next_box
-
-
-class SettingsView(RetrieveUpdateAPIView):
-    serializer_class = SettingsSerializer
-    permission_classes = [IsSettingsBoxAuthor]
-
-    def get_object(self):
-        pk = self.kwargs.get("pk")
-        box = Box.objects.select_related("settings").get(pk=pk)
-        return box.settings
 
 
 class DeckListView(ListCreateAPIView):
@@ -66,6 +55,16 @@ class BoxDetailView(RetrieveAPIView):
     serializer_class = BoxSerializer
     permission_classes = [IsBoxAuthor]
     queryset = Box.objects.all()
+
+
+class BoxSettingsView(RetrieveUpdateAPIView):
+    serializer_class = BoxSettingsSerializer
+    permission_classes = [IsSettingsBoxAuthor]
+
+    def get_object(self):
+        pk = self.kwargs.get("pk")
+        box = Box.objects.select_related("settings").get(pk=pk)
+        return box.settings
 
 
 class CardListView(ListCreateAPIView):

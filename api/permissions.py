@@ -18,13 +18,6 @@ class IsBoxAuthor(BasePermission):
         return request.user == obj.deck.author
 
 
-class IsCardAuthor(BasePermission):
-    message = "Only deck author can modify his cards"
-
-    def has_object_permission(self, request, view, obj):
-        return request.user == obj.deck.author
-
-
 class IsSettingsBoxAuthor(BasePermission):
     message = "Only deck author can access his boxes"
 
@@ -32,3 +25,10 @@ class IsSettingsBoxAuthor(BasePermission):
         pk = view.kwargs.get("pk")
         box = get_object_or_404(Box, pk=pk)
         return request.user == box.deck.author
+
+
+class IsCardAuthor(BasePermission):
+    message = "Only deck author can modify his cards"
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.deck.author

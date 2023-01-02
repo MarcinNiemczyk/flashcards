@@ -3,7 +3,18 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-class Settings(models.Model):
+class Deck(models.Model):
+    name = models.CharField(max_length=50)
+    box_amount = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(6)]
+    )
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class BoxSettings(models.Model):
     delay_correct = models.PositiveSmallIntegerField(
         default=3, help_text="Delay card after correct answer in days"
     )
@@ -16,18 +27,7 @@ class Settings(models.Model):
     random_order = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name_plural = "Settings"
-
-
-class Deck(models.Model):
-    name = models.CharField(max_length=50)
-    box_amount = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(6)]
-    )
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
+        verbose_name_plural = "Box Settings"
 
 
 class Box(models.Model):
@@ -38,14 +38,14 @@ class Box(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(6)]
     )
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
-    settings = models.ForeignKey(Settings, on_delete=models.CASCADE)
+    settings = models.ForeignKey(BoxSettings, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{str(self.number_of)}/{str(self.deck.box_amount)} ({self.deck.name})"
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.settings = Settings.objects.create()
+            self.settings = BoxSettings.objects.create()
         super().save(*args, **kwargs)
 
 

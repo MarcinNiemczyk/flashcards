@@ -3,10 +3,10 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 
-from api.models import Box, Card, Deck, Settings
+from api.models import Box, BoxSettings, Card, Deck
 
 
-@admin.register(Settings)
+@admin.register(BoxSettings)
 class SettingsAdmin(admin.ModelAdmin):
     list_display = ("__str__", "get_box")
 

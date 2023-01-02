@@ -4,11 +4,11 @@ from api.views import (
     AnswerView,
     BoxDetailView,
     BoxListView,
+    BoxSettingsView,
     CardDetailView,
     CardListView,
     DeckDetailView,
     DeckListView,
-    SettingsView,
 )
 
 urlpatterns = [
@@ -17,7 +17,9 @@ urlpatterns = [
     path("boxes/", BoxListView.as_view(), name="box-list"),
     path("boxes/<int:pk>", BoxDetailView.as_view(), name="box-detail"),
     path(
-        "boxes/<int:pk>/settings", SettingsView.as_view(), name="box-settings"
+        "boxes/<int:pk>/settings",
+        BoxSettingsView.as_view(),
+        name="box-settings",
     ),
     path("cards/", CardListView.as_view(), name="card-list"),
     path("cards/<int:pk>", CardDetailView.as_view(), name="card-detail"),

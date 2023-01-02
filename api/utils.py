@@ -7,41 +7,6 @@ from django.utils import timezone
 from api.models import Box, Card
 
 
-def get_deck_detail_absolute_url(request, deck_id):
-    url = reverse("deck-detail", kwargs={"pk": deck_id})
-    return request.build_absolute_uri(url)
-
-
-def get_deck_boxes_absolute_url(request, deck_id):
-    url = reverse("box-list") + "?deck=" + str(deck_id)
-    return request.build_absolute_uri(url)
-
-
-def get_deck_cards_absolute_url(request, deck_id):
-    url = reverse("card-list") + "?deck=" + str(deck_id)
-    return request.build_absolute_uri(url)
-
-
-def get_box_cards_absolute_url(request, box_id):
-    url = reverse("card-list") + "?box=" + str(box_id)
-    return request.build_absolute_uri(url)
-
-
-def get_box_detail_absolute_url(request, box_id):
-    url = reverse("box-detail", kwargs={"pk": box_id})
-    return request.build_absolute_uri(url)
-
-
-def get_card_detail_absolute_url(request, card_id):
-    url = reverse("card-detail", kwargs={"pk": card_id})
-    return request.build_absolute_uri(url)
-
-
-def get_box_settings_absolute_url(request, box_id):
-    url = reverse("box-settings", kwargs={"pk": box_id})
-    return request.build_absolute_uri(url)
-
-
 @transaction.atomic
 def add_boxes_in_deck(deck):
     for i in range(1, deck.box_amount + 1):
@@ -106,3 +71,38 @@ def __delay_card(card, time):
             microseconds=current_time.microsecond,
         )
     )
+
+
+def get_deck_detail_absolute_url(request, deck_id):
+    url = reverse("deck-detail", kwargs={"pk": deck_id})
+    return request.build_absolute_uri(url)
+
+
+def get_deck_boxes_absolute_url(request, deck_id):
+    url = reverse("box-list") + "?deck=" + str(deck_id)
+    return request.build_absolute_uri(url)
+
+
+def get_deck_cards_absolute_url(request, deck_id):
+    url = reverse("card-list") + "?deck=" + str(deck_id)
+    return request.build_absolute_uri(url)
+
+
+def get_box_cards_absolute_url(request, box_id):
+    url = reverse("card-list") + "?box=" + str(box_id)
+    return request.build_absolute_uri(url)
+
+
+def get_box_detail_absolute_url(request, box_id):
+    url = reverse("box-detail", kwargs={"pk": box_id})
+    return request.build_absolute_uri(url)
+
+
+def get_box_settings_absolute_url(request, box_id):
+    url = reverse("box-settings", kwargs={"pk": box_id})
+    return request.build_absolute_uri(url)
+
+
+def get_card_detail_absolute_url(request, card_id):
+    url = reverse("card-detail", kwargs={"pk": card_id})
+    return request.build_absolute_uri(url)
