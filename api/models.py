@@ -5,10 +5,10 @@ from django.db import models
 
 class Settings(models.Model):
     delay_correct = models.PositiveSmallIntegerField(
-        default=3, help_text="Delay correct answer in days"
+        default=3, help_text="Delay card after correct answer in days"
     )
     delay_wrong = models.PositiveSmallIntegerField(
-        default=3, help_text="Delay wrong answer in days"
+        default=3, help_text="Delay card after wrong answer in days"
     )
     reverse = models.BooleanField(
         default=False, help_text="Reverse card to question by rear side"

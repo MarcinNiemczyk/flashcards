@@ -37,6 +37,11 @@ def get_card_detail_absolute_url(request, card_id):
     return request.build_absolute_uri(url)
 
 
+def get_box_settings_absolute_url(request, box_id):
+    url = reverse("box-settings", kwargs={"pk": box_id})
+    return request.build_absolute_uri(url)
+
+
 @transaction.atomic
 def add_boxes_in_deck(deck):
     for i in range(1, deck.box_amount + 1):

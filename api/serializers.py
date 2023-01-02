@@ -1,15 +1,37 @@
 from django.db.models import Count
 from rest_framework import serializers
 
-from api.models import Box, Card, Deck
+from api.models import Box, Card, Deck, Settings
 from api.utils import (
     get_box_cards_absolute_url,
     get_box_detail_absolute_url,
+    get_box_settings_absolute_url,
     get_card_detail_absolute_url,
     get_deck_boxes_absolute_url,
     get_deck_cards_absolute_url,
     get_deck_detail_absolute_url,
 )
+
+
+class SettingsSerializer(serializers.ModelSerializer):
+    links = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Settings
+        fields = [
+            "delay_correct",
+            "delay_wrong",
+            "reverse",
+            "random_order",
+            "links",
+        ]
+
+    def get_links(self, obj):
+        request = self.context["request"]
+        box = Box.objects.get(settings=obj)
+        return {
+            "box": get_box_detail_absolute_url(request, box.id),
+        }
 
 
 class DeckSerializer(serializers.ModelSerializer):
@@ -60,6 +82,7 @@ class BoxSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         return {
             "self": get_box_detail_absolute_url(request, obj.id),
+            "settings": get_box_settings_absolute_url(request, obj.id),
             "deck": get_deck_detail_absolute_url(request, obj.deck.id),
             "cards": get_box_cards_absolute_url(request, obj.id),
         }
