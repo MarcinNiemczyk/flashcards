@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 from faker import Faker
 
-from api.models import Box, BoxSettings, Deck
+from api.models import Box, BoxSettings, Card, Deck
 
 faker = Faker()
 
@@ -32,4 +32,14 @@ def box(db, deck, box_settings):
         number_of=faker.random_int(min=1, max=6),
         deck=deck,
         settings=box_settings,
+    )
+
+
+@pytest.fixture
+def card(db, deck, box):
+    return Card.objects.create(
+        front=faker.text(max_nb_chars=150),
+        back=faker.text(max_nb_chars=150),
+        box=box,
+        deck=deck,
     )
