@@ -24,3 +24,12 @@ def deck(db, user):
 @pytest.fixture
 def box_settings(db):
     return BoxSettings.objects.create()
+
+
+@pytest.fixture
+def box(db, deck, box_settings):
+    return Box.objects.create(
+        number_of=faker.random_int(min=1, max=6),
+        deck=deck,
+        settings=box_settings,
+    )

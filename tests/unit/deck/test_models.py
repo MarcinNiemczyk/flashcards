@@ -17,7 +17,7 @@ def test_box_amount_min_value_edge_case(user):
         deck = Deck.objects.create(
             name=faker.text(max_nb_chars=50), box_amount=1, author=user
         )
-        deck.full_clean()
+        deck.clean_fields()
     except ValidationError:
         pytest.fail()
 
@@ -28,7 +28,7 @@ def test_box_amount_below_min_value_raises_error(user):
         deck = Deck.objects.create(
             name=faker.text(max_nb_chars=50), box_amount=0, author=user
         )
-        deck.full_clean()
+        deck.clean_fields()
 
 
 @pytest.mark.django_db
@@ -37,7 +37,7 @@ def test_box_amount_max_value_edge_case(user):
         deck = Deck.objects.create(
             name=faker.text(max_nb_chars=50), box_amount=6, author=user
         )
-        deck.full_clean()
+        deck.clean_fields()
     except ValidationError:
         pytest.fail()
 
@@ -48,7 +48,7 @@ def test_box_amount_above_max_value_raises_error(user):
         deck = Deck.objects.create(
             name=faker.text(max_nb_chars=50), box_amount=7, author=user
         )
-        deck.full_clean()
+        deck.clean_fields()
 
 
 @pytest.mark.django_db
