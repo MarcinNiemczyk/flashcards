@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 from faker import Faker
 
-from api.models import Deck
+from api.models import Box, BoxSettings, Deck
 
 faker = Faker()
 
@@ -19,3 +19,8 @@ def deck(db, user):
         box_amount=faker.random_int(min=1, max=6),
         author=user,
     )
+
+
+@pytest.fixture
+def box_settings(db):
+    return BoxSettings.objects.create()
